@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { MEZMUR_SONGS } from '../data/fellowshipData';
+import { MEZMUR_SONGS, TELEGRAM_REGISTRATION_BOT } from '../data/fellowshipData';
 import { DetailRoute, SectionId } from '../types/fellowship';
 import {
   Info,
@@ -199,14 +199,15 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
               Explore MCSF Fellowship Pages
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={() => onSelectCategory('register')}
+          <a
+            href={TELEGRAM_REGISTRATION_BOT}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap self-start md:self-auto"
           >
             <span>Member Registration</span>
             <ArrowUpRight className="w-4 h-4" />
-          </button>
+          </a>
         </ScrollReveal>
 
         {/* Category Cards Grid — Strictly animates AFTER user scrolls into view */}

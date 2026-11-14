@@ -81,10 +81,13 @@ test('publication filtering filters by category and search query', () => {
 
 test('Telegram link builders generate prefilled deep links for registration, family circle, and prayer desk', async () => {
   const {
+    TELEGRAM_REGISTRATION_BOT,
     buildTelegramRegistrationLink,
     buildFamilyRequestLink,
     buildPrayerMessageLink,
   } = await import('../data/fellowshipData.js');
+
+  assert.equal(TELEGRAM_REGISTRATION_BOT, 'https://t.me/McsfFellowshipBot');
 
   const regLink = buildTelegramRegistrationLink({
     fullName: 'Ruth Bekele',

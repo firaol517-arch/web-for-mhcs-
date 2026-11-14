@@ -1,6 +1,6 @@
 import React from 'react';
 import { DetailRoute, SectionId } from '../types/fellowship';
-import { TELEGRAM_CHANNEL } from '../data/fellowshipData';
+import { TELEGRAM_CHANNEL, TELEGRAM_REGISTRATION_BOT } from '../data/fellowshipData';
 import { ArrowRight, Send, ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { McsfLogo } from './McsfLogo';
@@ -86,16 +86,17 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
 
             {/* Primary CTA + Secondary Dark Actions */}
             <motion.div {...fadeUp(0.2)} className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1">
-              <motion.button
-                type="button"
+              <motion.a
+                href={TELEGRAM_REGISTRATION_BOT}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                onClick={() => onScrollToSection('register')}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors whitespace-nowrap shadow-[0_10px_28px_-6px_rgba(234,88,12,0.55)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FB923C]"
               >
                 <span>Enroll as a Member</span>
                 <ArrowRight className="w-4 h-4" />
-              </motion.button>
+              </motion.a>
 
               <motion.button
                 type="button"

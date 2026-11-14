@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationTab } from '../types/fellowship';
 import { Heart, Sparkles, BookOpen, ShieldCheck, ArrowRight, Compass } from 'lucide-react';
+import { TELEGRAM_REGISTRATION_BOT } from '../data/fellowshipData';
 
 interface DiscipleshipViewProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -107,13 +108,15 @@ export const DiscipleshipView: React.FC<DiscipleshipViewProps> = ({ onNavigate }
               </div>
 
               <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  onClick={() => onNavigate('register')}
+                <a
+                  href={TELEGRAM_REGISTRATION_BOT}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-5 py-2.5 rounded-xl bg-[#14345F] hover:bg-[#2F5FA3] text-white text-xs sm:text-sm font-semibold transition-colors flex items-center gap-2"
                 >
                   <span>Join Our Discipleship Community</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
                 <button
                   onClick={() => onNavigate('contact')}
                   className="px-5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs sm:text-sm font-semibold transition-colors"

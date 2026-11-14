@@ -13,6 +13,7 @@ import {
   MCSF_PUBLICATIONS,
   MINISTRY_SPOTLIGHTS,
   TELEGRAM_CHANNEL,
+  TELEGRAM_REGISTRATION_BOT,
 } from '../data/fellowshipData';
 import {
   ArrowLeft,
@@ -199,14 +200,15 @@ export const DetailView: React.FC<DetailViewProps> = ({
                   </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => onNavigateToSection('register')}
+                <a
+                  href={TELEGRAM_REGISTRATION_BOT}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs font-bold transition-colors whitespace-nowrap"
                 >
                   <span>Join Fellowship</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -306,14 +308,15 @@ export const DetailView: React.FC<DetailViewProps> = ({
               </div>
 
               <div className="pt-4 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => onNavigateToSection('register')}
+                <a
+                  href={TELEGRAM_REGISTRATION_BOT}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors inline-flex items-center gap-2"
                 >
                   <span>Volunteer for This Ministry</span>
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
                 <button
                   type="button"
                   onClick={() => onNavigateToSection('contact')}
@@ -445,14 +448,15 @@ export const DetailView: React.FC<DetailViewProps> = ({
             </div>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={() => onNavigateToSection('register')}
+              <a
+                href={TELEGRAM_REGISTRATION_BOT}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors inline-flex items-center gap-2"
               >
                 <span>Register & Connect</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </a>
               <a
                 href={TELEGRAM_CHANNEL}
                 target="_blank"

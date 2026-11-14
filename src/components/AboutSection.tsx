@@ -5,6 +5,7 @@ import {
   FELLOWSHIP_VIDEO,
   GALLERY_PHOTOS,
   TELEGRAM_CHANNEL,
+  TELEGRAM_REGISTRATION_BOT,
 } from '../data/fellowshipData';
 import {
   Target,
@@ -30,8 +31,8 @@ interface AboutSectionProps {
 const HOW_IT_WORKS_STEPS = [
   {
     step: '01',
-    title: 'Register & Connect',
-    detail: 'Complete the Member Registration form and share your details directly to @Gedion98 on Telegram.',
+    title: 'Register on Our Bot',
+    detail: 'Tap Register to open @McsfFellowshipBot on Telegram and enroll directly in seconds.',
   },
   {
     step: '02',
@@ -570,21 +571,22 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                 Ready to Grow With MCSF at Dagmawi Menelik College?
               </h3>
               <p className="text-xs sm:text-sm text-[#E2D6C3]/90 leading-relaxed">
-                Register in seconds, share directly to Gedion on Telegram, and join our next Wednesday 6:00 LT service at Semen Muluwengel &amp; Genet Church.
+                Register directly on @McsfFellowshipBot on Telegram and join our next Wednesday 6:00 LT service at Semen Muluwengel &amp; Genet Church.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <motion.button
-                type="button"
+              <motion.a
+                href={TELEGRAM_REGISTRATION_BOT}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                onClick={() => onScrollToSection('register')}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shadow-lg"
               >
                 <span>Enroll as a Member</span>
                 <ArrowRight className="w-4 h-4" />
-              </motion.button>
+              </motion.a>
               <motion.a
                 whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}

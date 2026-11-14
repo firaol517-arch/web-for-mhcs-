@@ -35,6 +35,8 @@ export const MEZMUR_SONGS: MezmurItem[] = [
 
 export const TELEGRAM_CHANNEL = 'https://t.me/lursuesz';
 export const TELEGRAM_CHANNEL_HANDLE = '@lursuesz';
+export const TELEGRAM_REGISTRATION_BOT = 'https://t.me/McsfFellowshipBot';
+export const TELEGRAM_REGISTRATION_BOT_HANDLE = '@McsfFellowshipBot';
 
 export const FELLOWSHIP_VIDEO = {
   src: '/assets/aistudio/video_2026-11-12_22-10-56_6a8ed457.mp4',
@@ -546,8 +548,8 @@ export const MCSF_FAQS = [
     a: 'MCSF Family groups consist of 5–8 students matched by department, clinical shifts, or academic year. They provide mutual prayer, emotional support, Family Day celebrations, and senior academic coaching.',
   },
   {
-    q: 'How do I submit my registration to Gedion on Telegram?',
-    a: 'Once you fill out the Member Registration form on this site, a direct "Send to Gedion (@Gedion98)" button will appear. Clicking it automatically drafts your full registration details directly into Telegram to send to Gedion.',
+    q: 'How do I register as an MCSF member?',
+    a: 'Click any "Register" or "Enroll as a Member" button on the site to jump straight to our official Telegram registration bot (@McsfFellowshipBot). Tap Start inside the bot to complete your fellowship registration—no website form required.',
   },
   {
     q: 'How does the Hospital & Adult ICU ministry operate?',

@@ -3,6 +3,7 @@ import { SectionId } from '../types/fellowship';
 import { Menu, X } from 'lucide-react';
 import { McsfLogo } from './McsfLogo';
 import { AnimatePresence, motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
+import { TELEGRAM_REGISTRATION_BOT } from '../data/fellowshipData';
 
 interface NavbarProps {
   activeSection: SectionId;
@@ -94,15 +95,16 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Zone 3: 1 primary CTA + Mobile toggle */}
         <div className="flex items-center gap-3 shrink-0">
-          <motion.button
-            type="button"
+          <motion.a
+            href={TELEGRAM_REGISTRATION_BOT}
+            target="_blank"
+            rel="noopener noreferrer"
             whileHover={prefersReducedMotion ? undefined : { scale: 1.03, y: -1 }}
             whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-            onClick={() => handleLinkClick('register')}
-            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shrink-0 shadow-[0_6px_18px_-4px_rgba(234,88,12,0.5)]"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shrink-0 shadow-[0_6px_18px_-4px_rgba(234,88,12,0.5)] inline-flex items-center"
           >
             Register
-          </motion.button>
+          </motion.a>
 
           <button
             type="button"

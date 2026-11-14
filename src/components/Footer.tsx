@@ -1,6 +1,10 @@
 import React from 'react';
 import { SectionId } from '../types/fellowship';
-import { FELLOWSHIP_LEADERS, TELEGRAM_CHANNEL } from '../data/fellowshipData';
+import {
+  FELLOWSHIP_LEADERS,
+  TELEGRAM_CHANNEL,
+  TELEGRAM_REGISTRATION_BOT,
+} from '../data/fellowshipData';
 import { ShieldCheck, MessageCircle } from 'lucide-react';
 import { McsfLogo } from './McsfLogo';
 import { ScrollReveal } from './ScrollReveal';
@@ -160,13 +164,14 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToSection, onOpenAdmin }
                 </button>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={() => onScrollToSection('register')}
+                <a
+                  href={TELEGRAM_REGISTRATION_BOT}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-[#FB923C] transition-colors font-bold text-[#FAF6EE]"
                 >
                   Register as Member
-                </button>
+                </a>
               </li>
               <li>
                 <button

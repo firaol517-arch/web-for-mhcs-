@@ -1,6 +1,6 @@
 import React from 'react';
 import { DetailRoute, SectionId } from '../types/fellowship';
-import { MINISTRY_SPOTLIGHTS } from '../data/fellowshipData';
+import { MINISTRY_SPOTLIGHTS, TELEGRAM_REGISTRATION_BOT } from '../data/fellowshipData';
 import { CheckCircle2, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { ScrollReveal } from './ScrollReveal';
 
@@ -10,7 +10,6 @@ interface HospitalMinistryViewProps {
 }
 
 export const HospitalMinistryView: React.FC<HospitalMinistryViewProps> = ({
-  onScrollToSection,
   onOpenDetail,
 }) => {
   return (
@@ -119,14 +118,15 @@ export const HospitalMinistryView: React.FC<HospitalMinistryViewProps> = ({
                 Luke 9:2 — In every clinical assessment, bedside prayer, and patient care shift, we serve as instruments of Christ&apos;s healing love in Addis Ababa.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => onScrollToSection('register')}
+            <a
+              href={TELEGRAM_REGISTRATION_BOT}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0"
             >
               <span>Join Outreach Team</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
         </ScrollReveal>
       </div>
