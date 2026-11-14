@@ -49,30 +49,12 @@ body {
   background: #EA580C;
 }
 
-@keyframes gradientShiftSlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 .animate-gradient-slow {
-  background: linear-gradient(125deg, #0b0b0c 0%, #1d1109 32%, #9a3412 65%, #141417 100%);
-  background-size: 240% 240%;
-  animation: gradientShiftSlow 14s ease-in-out infinite;
+  background: linear-gradient(125deg, #0b0b0c 0%, #1d1109 38%, #6d260b 78%, #141417 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .animate-gradient-slow {
-    animation: none;
-    background-position: 0% 50%;
   }
 }

@@ -13,7 +13,7 @@ import {
 } from '../data/fellowshipData';
 import { isValidEmail, isValidPhoneNumber } from '../utils/fellowship';
 import { CheckCircle2, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface FamilyViewProps {
@@ -138,15 +138,13 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                 className="w-full text-left rounded-2xl overflow-hidden bg-white border border-[#E2D6C3] hover:border-[#EA580C] shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
               >
                 <div className="relative h-64 w-full overflow-hidden bg-[#0B0B0C]">
-                  <motion.img
+                  <img
+                    loading="lazy"
+                    decoding="async"
                     src={item.src}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    initial={prefersReducedMotion ? false : { scale: 1.12, opacity: 0.7 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    viewport={{ once: true, amount: 'some', margin: '0px 0px -85px 0px' }}
-                    transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-[#FAF6EE]">
@@ -175,55 +173,84 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
         {/* Placement Request Form */}
         <ScrollReveal>
           <div className="rounded-3xl p-6 sm:p-10 bg-white border border-[#E2D6C3] shadow-lg max-w-2xl mx-auto">
-            {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
-                  Almost there!
-                </h3>
-                <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong>{fullName}</strong>. Tap the button below to send your family circle request to the coordinator on Telegram so they can introduce you to your circle.
-                </p>
+            <AnimatePresence mode="wait" initial={false}>
+              {submitted ? (
+                <motion.div
+                  key="family-success"
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-center py-8"
+                >
+                  <motion.div
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : { scale: 0.45, opacity: 0, rotate: -12 }
+                    }
+                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                    className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30"
+                  >
+                    <CheckCircle2 className="w-8 h-8" />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
+                    Almost there!
+                  </h3>
+                  <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
+                    Thank you, <strong>{fullName}</strong>. Tap the button below to send your family circle request to the coordinator on Telegram so they can introduce you to your circle.
+                  </p>
 
-                <div className="mt-6">
-                  <a
-                    href={buildFamilyRequestLink({
-                      fullName,
-                      department,
-                      academicYear,
-                      phone,
-                      email,
-                      dutyShiftNotes: dutyShiftNotes.trim() || undefined,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
-                  >
-                    Send request to Gedion on Telegram
-                  </a>
-                </div>
+                  <div className="mt-6">
+                    <motion.a
+                      whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                      href={buildFamilyRequestLink({
+                        fullName,
+                        department,
+                        academicYear,
+                        phone,
+                        email,
+                        dutyShiftNotes: dutyShiftNotes.trim() || undefined,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
+                    >
+                      Send request to Gedion on Telegram
+                    </motion.a>
+                  </div>
 
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => onScrollToSection('gallery')}
-                    className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] text-[#FAF6EE] font-bold text-xs sm:text-sm hover:bg-[#EA580C] transition-colors"
-                  >
-                    Browse Full Gallery
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="px-5 py-2.5 rounded-xl bg-[#FAF6EE] text-[#0B0B0C] border border-[#E2D6C3] font-semibold text-xs sm:text-sm hover:bg-[#F2EBE0] transition-colors"
-                  >
-                    Submit Another Request
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div>
+                  <div className="mt-6 flex flex-wrap justify-center gap-3">
+                    <motion.button
+                      type="button"
+                      whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                      onClick={() => onScrollToSection('gallery')}
+                      className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] text-[#FAF6EE] font-bold text-xs sm:text-sm hover:bg-[#EA580C] transition-colors"
+                    >
+                      Browse Full Gallery
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                      onClick={handleReset}
+                      className="px-5 py-2.5 rounded-xl bg-[#FAF6EE] text-[#0B0B0C] border border-[#E2D6C3] font-semibold text-xs sm:text-sm hover:bg-[#F2EBE0] transition-colors"
+                    >
+                      Submit Another Request
+                    </motion.button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="family-form"
+                  initial={prefersReducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: 0.18 }}
+                >
                 <div className="mb-6 pb-4 border-b border-[#F2EBE0]">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">
                     Family Placement Request
@@ -350,10 +377,12 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                   </div>
 
                   <div className="pt-2">
-                    <button
+                    <motion.button
                       type="submit"
+                      whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.01 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                       disabled={isSubmitting}
-                      className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
+                      className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
                     >
                       {isSubmitting ? (
                         <span>Submitting Request...</span>
@@ -363,11 +392,12 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
-                    </button>
+                    </motion.button>
                   </div>
                 </form>
-              </div>
-            )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </ScrollReveal>
       </div>

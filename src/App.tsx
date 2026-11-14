@@ -17,6 +17,7 @@ const DetailView = lazy(() => import('./components/DetailView').then((m) => ({ d
 const AdminPortal = lazy(() => import('./components/AdminPortal').then((m) => ({ default: m.AdminPortal })));
 import { Footer } from './components/Footer';
 import { ArrowLeft } from 'lucide-react';
+import { MotionConfig, motion } from 'motion/react';
 
 const SECTION_IDS: SectionId[] = [
   'hero',
@@ -202,69 +203,84 @@ export default function App() {
 
   const isDarkSubPage = activeSection === 'hospital' || activeSection === 'gallery' || activeSection === 'contact';
 
+  const viewKey = isAdminOpen
+    ? 'admin'
+    : activeDetail
+      ? `detail-${activeDetail.kind}-${activeDetail.id}`
+      : activeSection;
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF6EE] text-[#0B0B0C] selection:bg-[#EA580C] selection:text-white">
-      <Navbar
-        activeSection={activeSection}
-        onScrollToSection={navigateToCategory}
-        isSubView={Boolean(activeDetail || isAdminOpen)}
-        onReturnHome={() => navigateToCategory('hero')}
-      />
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen flex flex-col bg-[#FAF6EE] text-[#0B0B0C] selection:bg-[#EA580C] selection:text-white">
+        <Navbar
+          activeSection={activeSection}
+          onScrollToSection={navigateToCategory}
+          isSubView={Boolean(activeDetail || isAdminOpen)}
+          onReturnHome={() => navigateToCategory('hero')}
+        />
 
-      <main className="flex-1 overflow-x-clip">
-        <Suspense fallback={<PageFallback />}>
-        {isAdminOpen ? (
-          <AdminPortal onBack={() => navigateToCategory('hero')} />
-        ) : activeDetail ? (
-          <DetailView
-            detail={activeDetail}
-            onBack={handleBackFromDetail}
-            onSelectDetail={handleOpenDetail}
-            onNavigateToSection={navigateToCategory}
-          />
-        ) : (
-          <>
-            {activeSection !== 'hero' && (
-              <div
-                className={`border-b ${
-                  isDarkSubPage
-                    ? 'bg-[#0B0B0C] border-[#27272C] text-[#FAF6EE]'
-                    : 'bg-[#F2EBE0] border-[#E2D6C3] text-[#0B0B0C]'
-                }`}
-              >
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => navigateToCategory('hero')}
-                    className={`inline-flex items-center gap-1.5 font-bold transition-colors ${
-                      isDarkSubPage
-                        ? 'text-[#FB923C] hover:text-white'
-                        : 'text-[#EA580C] hover:text-[#0B0B0C]'
-                    }`}
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>All Categories</span>
-                  </button>
-                  <span
-                    className={`font-semibold truncate ${
-                      isDarkSubPage ? 'text-[#E2D6C3]' : 'text-[#524C44]'
-                    }`}
-                  >
-                    {CATEGORY_TITLES[activeSection]}
-                  </span>
-                </div>
-              </div>
-            )}
-            {renderCategoryView()}
-          </>
-        )}
-        </Suspense>
-      </main>
+        <main className="flex-1 overflow-x-clip">
+          <Suspense fallback={<PageFallback />}>
+            <motion.div
+              key={viewKey}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {isAdminOpen ? (
+                <AdminPortal onBack={() => navigateToCategory('hero')} />
+              ) : activeDetail ? (
+                <DetailView
+                  detail={activeDetail}
+                  onBack={handleBackFromDetail}
+                  onSelectDetail={handleOpenDetail}
+                  onNavigateToSection={navigateToCategory}
+                />
+              ) : (
+                <>
+                  {activeSection !== 'hero' && (
+                    <div
+                      className={`border-b ${
+                        isDarkSubPage
+                          ? 'bg-[#0B0B0C] border-[#27272C] text-[#FAF6EE]'
+                          : 'bg-[#F2EBE0] border-[#E2D6C3] text-[#0B0B0C]'
+                      }`}
+                    >
+                      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => navigateToCategory('hero')}
+                          className={`inline-flex items-center gap-1.5 font-bold transition-colors ${
+                            isDarkSubPage
+                              ? 'text-[#FB923C] hover:text-white'
+                              : 'text-[#EA580C] hover:text-[#0B0B0C]'
+                          }`}
+                        >
+                          <ArrowLeft className="w-3.5 h-3.5" />
+                          <span>All Categories</span>
+                        </button>
+                        <span
+                          className={`font-semibold truncate ${
+                            isDarkSubPage ? 'text-[#E2D6C3]' : 'text-[#524C44]'
+                          }`}
+                        >
+                          {CATEGORY_TITLES[activeSection]}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {renderCategoryView()}
+                </>
+              )}
+            </motion.div>
+          </Suspense>
+        </main>
 
-      <Footer
-        onScrollToSection={navigateToCategory}
-        onOpenAdmin={handleOpenAdmin}
-      />
-    </div>
+        <Footer
+          onScrollToSection={navigateToCategory}
+          onOpenAdmin={handleOpenAdmin}
+        />
+      </div>
+    </MotionConfig>
   );
 }

@@ -3,6 +3,7 @@ import { SectionId } from '../types/fellowship';
 import { FELLOWSHIP_LEADERS, TELEGRAM_CHANNEL } from '../data/fellowshipData';
 import { ShieldCheck, MessageCircle } from 'lucide-react';
 import { McsfLogo } from './McsfLogo';
+import { ScrollReveal } from './ScrollReveal';
 
 interface FooterProps {
   onScrollToSection: (section: SectionId) => void;
@@ -12,7 +13,7 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ onScrollToSection, onOpenAdmin }) => {
   return (
     <footer className="bg-[#070708] text-[#FAF6EE] pt-14 pb-12 border-t border-[#27272C]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <ScrollReveal afterScroll className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-12 border-b border-[#27272C]">
           {/* Brand Info */}
           <div className="col-span-2 md:col-span-5 space-y-4">
@@ -197,7 +198,7 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToSection, onOpenAdmin }
           </div>
           <div>&copy; 2026 MCSF Fellowship. All rights reserved.</div>
         </div>
-      </div>
+      </ScrollReveal>
     </footer>
   );
 };

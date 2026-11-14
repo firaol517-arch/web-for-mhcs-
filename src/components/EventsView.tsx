@@ -3,6 +3,7 @@ import { MCSF_EVENTS } from '../data/fellowshipData';
 import { DetailRoute } from '../types/fellowship';
 import { formatEthiopianTimeGuide } from '../utils/fellowship';
 import { Clock, MapPin, Bookmark, ArrowUpRight, Check } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface EventsViewProps {
@@ -10,6 +11,7 @@ interface EventsViewProps {
 }
 
 export const EventsView: React.FC<EventsViewProps> = ({ onOpenDetail }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [savedEvents, setSavedEvents] = useState<string[]>(['evt-wednesday-prayer']);
   const [interactiveEthHour, setInteractiveEthHour] = useState<number>(6);
@@ -99,115 +101,152 @@ export const EventsView: React.FC<EventsViewProps> = ({ onOpenDetail }) => {
 
         {/* Category Filter Tabs */}
         <div className="flex flex-wrap items-center gap-2 pb-4 mb-8">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
-                selectedCategory === cat.id
-                  ? 'bg-[#0B0B0C] text-[#FAF6EE] font-bold shadow-sm'
-                  : 'bg-white text-[#524C44] border border-[#E2D6C3] hover:border-[#EA580C] hover:text-[#0B0B0C]'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isActive = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`relative px-4 py-2 rounded-xl text-xs sm:text-sm whitespace-nowrap transition-colors ${
+                  isActive
+                    ? 'text-[#FAF6EE] font-bold'
+                    : 'bg-white text-[#524C44] font-semibold border border-[#E2D6C3] hover:border-[#EA580C] hover:text-[#0B0B0C]'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="events-cat-pill"
+                    transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                    className="absolute inset-0 bg-[#0B0B0C] rounded-xl shadow-sm"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative z-10">{cat.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Clickable Events Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div key={selectedCategory} className="grid md:grid-cols-2 gap-6">
           {filteredEvents.map((evt, idx) => {
             const isSaved = savedEvents.includes(evt.id);
+            const isWednesdayMain = evt.id === 'evt-wednesday-prayer';
             return (
-              <ScrollReveal key={evt.id} delay={idx * 0.06}>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() =>
-                    onOpenDetail({ kind: 'event', id: evt.id, returnSection: 'events' })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onOpenDetail({ kind: 'event', id: evt.id, returnSection: 'events' });
+              <motion.div
+                key={evt.id}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+                transition={{
+                  duration: 0.28,
+                  delay: prefersReducedMotion ? 0 : Math.min((idx % 2) * 0.05, 0.1),
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      onOpenDetail({ kind: 'event', id: evt.id, returnSection: 'events' })
                     }
-                  }}
-                  className="bg-white rounded-3xl overflow-hidden border border-[#E2D6C3] shadow-sm hover:border-[#EA580C] hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
-                >
-                  {evt.image && (
-                    <div className="relative h-44 w-full bg-[#0B0B0C] overflow-hidden">
-                      <img loading="lazy" decoding="async"
-                        src={evt.image}
-                        alt={evt.title}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <button
-                        type="button"
-                        onClick={(e) => toggleSaveEvent(e, evt.id)}
-                        className={`absolute top-3 right-3 p-2 rounded-lg border transition-colors ${
-                          isSaved
-                            ? 'bg-[#EA580C] text-white border-[#EA580C]'
-                            : 'bg-black/60 text-white hover:bg-black border-white/20'
-                        }`}
-                        title={isSaved ? 'Bookmarked' : 'Bookmark this event'}
-                        aria-label={`Bookmark ${evt.title}`}
-                      >
-                        <Bookmark className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 text-xs text-[#6C6358] mb-2">
-                        <span className="font-bold text-[#EA580C]">{evt.category}</span>
-                        <span aria-hidden="true">·</span>
-                        <span>{evt.status}</span>
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onOpenDetail({ kind: 'event', id: evt.id, returnSection: 'events' });
+                      }
+                    }}
+                    className="bg-white rounded-3xl overflow-hidden border border-[#E2D6C3] shadow-sm hover:border-[#EA580C] hover:shadow-lg transition-colors flex flex-col justify-between group cursor-pointer h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
+                  >
+                    {evt.image && (
+                      <div className="relative h-44 w-full bg-[#0B0B0C] overflow-hidden">
+                        <img
+                          loading="lazy"
+                          decoding="async"
+                          src={evt.image}
+                          alt={evt.title}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                        <motion.button
+                          type="button"
+                          whileTap={prefersReducedMotion ? undefined : { scale: 0.86 }}
+                          onClick={(e) => toggleSaveEvent(e, evt.id)}
+                          className={`absolute top-3 right-3 p-2 rounded-lg border transition-colors ${
+                            isSaved
+                              ? 'bg-[#EA580C] text-white border-[#EA580C]'
+                              : 'bg-black/60 text-white hover:bg-black border-white/20'
+                          }`}
+                          title={isSaved ? 'Bookmarked' : 'Bookmark this event'}
+                          aria-label={`Bookmark ${evt.title}`}
+                        >
+                          <Bookmark className="w-4 h-4" />
+                        </motion.button>
                       </div>
+                    )}
 
-                      <h3 className="font-display font-extrabold text-lg sm:text-xl text-[#0B0B0C] group-hover:text-[#EA580C] transition-colors">
-                        {evt.title}
-                      </h3>
-
-                      <p className="mt-2 text-xs sm:text-sm text-[#524C44] leading-relaxed">
-                        {evt.description}
-                      </p>
-
-                      <div className="mt-4 space-y-2 border-t border-[#F2EBE0] pt-4 text-xs text-[#524C44]">
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-[#EA580C] shrink-0" />
-                          <span>
-                            <strong className="text-[#0B0B0C]">{evt.schedule}</strong> ·{' '}
-                            {evt.ethiopianTime} ({evt.standardTime})
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 text-xs text-[#6C6358] mb-2">
+                          <span className="font-bold text-[#EA580C]">{evt.category}</span>
+                          <span aria-hidden="true">·</span>
+                          <span className="inline-flex items-center gap-1.5">
+                            {isWednesdayMain && (
+                              <span className="relative flex h-2 w-2" aria-hidden="true">
+                                <span
+                                  className={`${
+                                    prefersReducedMotion ? '' : 'animate-ping '
+                                  }absolute inline-flex h-full w-full rounded-full bg-[#EA580C] opacity-75`}
+                                />
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EA580C]" />
+                              </span>
+                            )}
+                            <span>{evt.status}</span>
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[#EA580C] shrink-0" />
-                          <span>{evt.location}</span>
+                        <h3 className="font-display font-extrabold text-lg sm:text-xl text-[#0B0B0C] group-hover:text-[#EA580C] transition-colors">
+                          {evt.title}
+                        </h3>
+
+                        <p className="mt-2 text-xs sm:text-sm text-[#524C44] leading-relaxed">
+                          {evt.description}
+                        </p>
+
+                        <div className="mt-4 space-y-2 border-t border-[#F2EBE0] pt-4 text-xs text-[#524C44]">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-[#EA580C] shrink-0" />
+                            <span>
+                              <strong className="text-[#0B0B0C]">{evt.schedule}</strong> ·{' '}
+                              {evt.ethiopianTime} ({evt.standardTime})
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-[#EA580C] shrink-0" />
+                            <span>{evt.location}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="mt-5 pt-4 border-t border-[#F2EBE0] flex items-center justify-between gap-3">
-                      <span className="text-xs font-semibold text-[#0B0B0C] inline-flex items-center gap-1.5">
-                        <Check className="w-3.5 h-3.5 text-[#EA580C]" />
-                        <span>Open for all departments</span>
-                      </span>
+                      <div className="mt-5 pt-4 border-t border-[#F2EBE0] flex items-center justify-between gap-3">
+                        <span className="text-xs font-semibold text-[#0B0B0C] inline-flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 text-[#EA580C]" />
+                          <span>Open for all departments</span>
+                        </span>
 
-                      <span className="inline-flex items-center gap-1 text-xs font-bold text-[#EA580C] group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
-                        <span>Full Details</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </span>
+                        <span className="inline-flex items-center gap-1 text-xs font-bold text-[#EA580C] group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
+                          <span>Full Details</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            );
-          })}
+                </motion.div>
+              );
+            })}
         </div>
       </div>
     </section>

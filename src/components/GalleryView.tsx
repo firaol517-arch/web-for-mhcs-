@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GALLERY_PHOTOS } from '../data/fellowshipData';
 import { DetailRoute } from '../types/fellowship';
 import { ArrowUpRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface GalleryViewProps {
@@ -9,6 +10,7 @@ interface GalleryViewProps {
 }
 
 export const GalleryView: React.FC<GalleryViewProps> = ({ onOpenDetail }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [selectedTag, setSelectedTag] = useState<string>('all');
 
   const tags = [
@@ -45,41 +47,66 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ onOpenDetail }) => {
           </p>
         </ScrollReveal>
 
-        {/* Interactive Category Tabs */}
+        {/* Interactive Category Tabs with spring shared pill */}
         <div className="flex flex-wrap items-center justify-center gap-2 pb-4 mb-8">
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => setSelectedTag(tag)}
-              className={`px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                selectedTag === tag
-                  ? 'bg-[#EA580C] text-white shadow-md font-bold'
-                  : 'bg-[#141417] text-[#E2D6C3] border border-[#27272C] hover:border-[#EA580C] hover:text-white'
-              }`}
-            >
-              {tag === 'all' ? `All Moments (${GALLERY_PHOTOS.length})` : tag}
-            </button>
-          ))}
+          {tags.map((tag) => {
+            const isActive = selectedTag === tag;
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setSelectedTag(tag)}
+                className={`relative px-4 py-1.5 rounded-xl text-xs whitespace-nowrap transition-colors ${
+                  isActive
+                    ? 'text-white font-bold'
+                    : 'bg-[#141417] text-[#E2D6C3] font-semibold border border-[#27272C] hover:border-[#EA580C] hover:text-white'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="gallery-tag-pill"
+                    transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                    className="absolute inset-0 bg-[#EA580C] rounded-xl shadow-md"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="relative z-10">
+                  {tag === 'all' ? `All Moments (${GALLERY_PHOTOS.length})` : tag}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Clickable Media Grid (Card-to-Detail) */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div key={selectedTag} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPhotos.map((photo, idx) => (
-            <ScrollReveal key={photo.id} delay={(idx % 3) * 0.05}>
+            <motion.div
+              key={photo.id}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+              transition={{
+                duration: 0.28,
+                delay: prefersReducedMotion ? 0 : Math.min((idx % 3) * 0.04, 0.12),
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
               <button
                 type="button"
                 onClick={() =>
                   onOpenDetail({ kind: 'photo', id: photo.id, returnSection: 'gallery' })
                 }
-                className="w-full text-left group cursor-pointer rounded-2xl overflow-hidden bg-[#141417] border border-[#27272C] hover:border-[#EA580C] transition-all duration-300 shadow-lg flex flex-col justify-between h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
+                className="w-full text-left group cursor-pointer rounded-2xl overflow-hidden bg-[#141417] border border-[#27272C] hover:border-[#EA580C] transition-colors duration-200 shadow-lg hover:shadow-2xl flex flex-col justify-between h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
               >
                 <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-black">
-                  <img loading="lazy" decoding="async"
+                  <img
+                    loading="lazy"
+                    decoding="async"
                     src={photo.src}
                     alt={photo.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
 
@@ -108,7 +135,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ onOpenDetail }) => {
                   </div>
                 </div>
               </button>
-            </ScrollReveal>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -19,7 +19,7 @@ import {
   Quote,
   Send,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface AboutSectionProps {
@@ -98,15 +98,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
       {/* Top Visual Intro Banner (Community Section) — Image reveals with smooth zoom */}
       <div className="relative overflow-hidden bg-[#0B0B0C] text-[#FAF6EE] border-b border-[#27272C]">
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <motion.img
+          <img
             src="/assets/aistudio/photo_2026-11-12_17-40-29_01ace01c.jpg"
             alt=""
             referrerPolicy="no-referrer"
-            initial={prefersReducedMotion ? false : { scale: 1.15, opacity: 0.35 }}
-            whileInView={{ scale: 1, opacity: 0.75 }}
-            viewport={{ once: true, amount: 'some', margin: '0px 0px -60px 0px' }}
-            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-cover object-center opacity-75"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/55 to-[#0B0B0C]/25" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C]/85 via-transparent to-[#0B0B0C]/35" />
@@ -131,25 +127,29 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
               </div>
 
               <div className="pt-2 flex flex-wrap gap-3">
-                <button
+                <motion.button
                   type="button"
+                  whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                   onClick={() => onScrollToSection('hospital')}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] text-white text-xs sm:text-sm font-bold hover:bg-[#C2410C] transition-colors whitespace-nowrap shadow-lg"
                 >
                   <span>Explore Hospital Care</span>
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="button"
+                  whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                   onClick={() => onScrollToSection('family')}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#141417]/90 hover:bg-[#27272C] text-[#FAF6EE] border border-[#27272C] text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
                 >
                   <span>Join a Family Circle</span>
-                </button>
+                </motion.button>
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.12} className="lg:col-span-5">
-              <div className="rounded-3xl p-6 sm:p-8 bg-[#0B0B0C]/75 backdrop-blur-sm border border-white/10 text-[#FAF6EE] shadow-2xl">
+            <ScrollReveal delay={0.08} className="lg:col-span-5">
+              <div className="rounded-3xl p-6 sm:p-8 bg-[#0B0B0C]/90 border border-white/10 text-[#FAF6EE] shadow-2xl">
                 <div className="flex items-center justify-between pb-4 border-b border-white/15 text-xs">
                   <span className="font-bold uppercase tracking-wider text-[#FB923C]">
                     Medical Calling
@@ -206,7 +206,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
         <div className="rounded-3xl p-6 sm:p-8 bg-[#0B0B0C] text-[#FAF6EE] border border-[#27272C] shadow-xl">
           <div className="grid lg:grid-cols-12 gap-8 items-center">
             {/* Left Featured Card slides in from Left */}
-            <ScrollReveal direction="fromLeft" className="lg:col-span-6 space-y-4">
+            <ScrollReveal afterScroll direction="fromLeft" className="lg:col-span-6 space-y-4">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#FB923C]">
                 <Play className="w-3.5 h-3.5 fill-[#FB923C]" />
                 <span>Featured Highlights · Worship &amp; Word</span>
@@ -241,6 +241,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                 {wednesdayFlyers.map((flyer, idx) => (
                   <ScrollReveal
                     key={flyer.id}
+                    afterScroll
                     direction={idx % 2 === 0 ? 'fromLeft' : 'fromRight'}
                     delay={idx * 0.14}
                   >
@@ -285,7 +286,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
 
         {/* How It Works — Steps activate sequentially */}
         <div className="space-y-6">
-          <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <ScrollReveal afterScroll className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] font-display block">
                 How It Works
@@ -301,54 +302,42 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {HOW_IT_WORKS_STEPS.map((item, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={item.step}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 30, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
-                transition={{
-                  duration: 0.72,
-                  delay: prefersReducedMotion ? 0 : idx * 0.18,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="rounded-2xl p-5 bg-white border border-[#E2D6C3] shadow-sm flex flex-col justify-between space-y-3"
+                afterScroll
+                direction="zoom"
+                delay={idx * 0.06}
+                duration={0.4}
+                className="h-full"
               >
-                <div className="flex items-center justify-between">
-                  <motion.span
-                    initial={
-                      prefersReducedMotion
-                        ? false
-                        : { backgroundColor: '#F2EBE0', color: '#0B0B0C' }
-                    }
-                    whileInView={{ backgroundColor: '#EA580C', color: '#FFFFFF' }}
-                    viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
-                    transition={{
-                      duration: 0.55,
-                      delay: prefersReducedMotion ? 0 : idx * 0.18 + 0.2,
-                    }}
-                    className="w-9 h-9 rounded-xl font-display font-black text-xs flex items-center justify-center shadow-sm"
-                  >
-                    {item.step}
-                  </motion.span>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#EA580C]">
-                    Step {idx + 1}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-base text-[#0B0B0C]">
-                    {item.title}
-                  </h4>
-                  <p className="text-xs text-[#524C44] mt-1 leading-relaxed">
-                    {item.detail}
-                  </p>
-                </div>
-              </motion.div>
+                <motion.div
+                  whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+                  className="h-full rounded-2xl p-5 bg-white border border-[#E2D6C3] hover:border-[#EA580C]/50 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="w-9 h-9 rounded-xl bg-[#EA580C] text-white font-display font-black text-xs flex items-center justify-center shadow-sm">
+                      {item.step}
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#EA580C]">
+                      Step {idx + 1}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-base text-[#0B0B0C]">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs text-[#524C44] mt-1 leading-relaxed">
+                      {item.detail}
+                    </p>
+                  </div>
+                </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
 
         {/* Vision & Mission Card */}
-        <ScrollReveal>
+        <ScrollReveal afterScroll>
           <div className="rounded-3xl p-6 sm:p-10 bg-white border border-[#E2D6C3] shadow-sm">
             <div className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-[#F2EBE0]">
               <div>
@@ -364,90 +353,107 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                 className="flex items-center gap-1 p-1 bg-[#FAF6EE] rounded-xl border border-[#E2D6C3]"
                 role="tablist"
               >
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'vision'}
-                  onClick={() => setActiveTab('vision')}
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-colors whitespace-nowrap ${
-                    activeTab === 'vision'
-                      ? 'bg-[#0B0B0C] text-[#FAF6EE] shadow'
-                      : 'text-[#524C44] hover:text-[#0B0B0C]'
-                  }`}
-                >
-                  Our Vision
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'mission'}
-                  onClick={() => setActiveTab('mission')}
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-colors whitespace-nowrap ${
-                    activeTab === 'mission'
-                      ? 'bg-[#0B0B0C] text-[#FAF6EE] shadow'
-                      : 'text-[#524C44] hover:text-[#0B0B0C]'
-                  }`}
-                >
-                  Our Mission
-                </button>
+                {(['vision', 'mission'] as const).map((tabKey) => {
+                  const isActive = activeTab === tabKey;
+                  return (
+                    <button
+                      key={tabKey}
+                      type="button"
+                      role="tab"
+                      aria-selected={isActive}
+                      onClick={() => setActiveTab(tabKey)}
+                      className={`relative px-4 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-colors whitespace-nowrap ${
+                        isActive ? 'text-[#FAF6EE]' : 'text-[#524C44] hover:text-[#0B0B0C]'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="vision-mission-pill"
+                          transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                          className="absolute inset-0 bg-[#0B0B0C] rounded-lg shadow"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span className="relative z-10">
+                        {tabKey === 'vision' ? 'Our Vision' : 'Our Mission'}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             <div className="mt-6">
-              {activeTab === 'vision' ? (
-                <div className="grid md:grid-cols-12 gap-6 items-center">
-                  <div className="md:col-span-8 space-y-3">
-                    <div className="flex items-center gap-2 text-[#EA580C] font-bold text-sm">
-                      <Target className="w-5 h-5" />
-                      <span>Holistic Excellence in Health &amp; Discipleship</span>
+              <AnimatePresence mode="wait" initial={false}>
+                {activeTab === 'vision' ? (
+                  <motion.div
+                    key="vision"
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="grid md:grid-cols-12 gap-6 items-center"
+                  >
+                    <div className="md:col-span-8 space-y-3">
+                      <div className="flex items-center gap-2 text-[#EA580C] font-bold text-sm">
+                        <Target className="w-5 h-5" />
+                        <span>Holistic Excellence in Health &amp; Discipleship</span>
+                      </div>
+                      <p className="text-sm sm:text-base text-[#524C44] leading-relaxed">
+                        To raise a generation of Christian healthcare professionals—physicians, nurses, pharmacists, and medical scientists—who transform hospitals across Ethiopia through unmatched professional integrity, compassionate patient care, and bold testimony of the Gospel of Jesus Christ.
+                      </p>
+                      <blockquote className="p-4 bg-[#FAF6EE] border border-[#E2D6C3] rounded-xl text-xs sm:text-sm text-[#0B0B0C] italic font-medium">
+                        &quot;Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.&quot; — Colossians 3:23
+                      </blockquote>
                     </div>
-                    <p className="text-sm sm:text-base text-[#524C44] leading-relaxed">
-                      To raise a generation of Christian healthcare professionals—physicians, nurses, pharmacists, and medical scientists—who transform hospitals across Ethiopia through unmatched professional integrity, compassionate patient care, and bold testimony of the Gospel of Jesus Christ.
-                    </p>
-                    <blockquote className="p-4 bg-[#FAF6EE] border border-[#E2D6C3] rounded-xl text-xs sm:text-sm text-[#0B0B0C] italic font-medium">
-                      &quot;Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.&quot; — Colossians 3:23
-                    </blockquote>
-                  </div>
-                  <div className="md:col-span-4 bg-[#FAF6EE] rounded-2xl p-5 border border-[#E2D6C3]">
-                    <span className="text-xs font-bold text-[#EA580C] block uppercase tracking-wider">
-                      Vision Impact
-                    </span>
-                    <p className="text-xs text-[#524C44] mt-2 leading-relaxed">
-                      Graduating health practitioners equipped with spiritual discernment and medical expertise to serve both inpatient hospital beds and underserved rural clinics.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid md:grid-cols-12 gap-6 items-center">
-                  <div className="md:col-span-8 space-y-3">
-                    <div className="flex items-center gap-2 text-[#EA580C] font-bold text-sm">
-                      <Compass className="w-5 h-5" />
-                      <span>Nurturing Students &amp; Healing Wards</span>
+                    <div className="md:col-span-4 bg-[#FAF6EE] rounded-2xl p-5 border border-[#E2D6C3]">
+                      <span className="text-xs font-bold text-[#EA580C] block uppercase tracking-wider">
+                        Vision Impact
+                      </span>
+                      <p className="text-xs text-[#524C44] mt-2 leading-relaxed">
+                        Graduating health practitioners equipped with spiritual discernment and medical expertise to serve both inpatient hospital beds and underserved rural clinics.
+                      </p>
                     </div>
-                    <p className="text-sm sm:text-base text-[#524C44] leading-relaxed">
-                      Our mission is to foster a Christ-centered sanctuary for healthcare students to grow spiritually, maintain emotional resilience through intense exams, intercede for critically ill hospital patients, and shine as salt and light across Dagmawi Menelik Health Science College.
-                    </p>
-                    <blockquote className="p-4 bg-[#FAF6EE] border border-[#E2D6C3] rounded-xl text-xs sm:text-sm text-[#0B0B0C] italic font-medium">
-                      &quot;Truly I tell you, whatever you did for one of the least of these brothers and sisters of mine, you did for me.&quot; — Matthew 25:40
-                    </blockquote>
-                  </div>
-                  <div className="md:col-span-4 bg-[#FAF6EE] rounded-2xl p-5 border border-[#E2D6C3]">
-                    <span className="text-xs font-bold text-[#EA580C] block uppercase tracking-wider">
-                      Core Ministries
-                    </span>
-                    <p className="text-xs text-[#524C44] mt-2 leading-relaxed">
-                      Wednesday Semen Muluwengel &amp; Genet worship (6:00 LT), Adult ICU prayer visits, small-group family circles, and annual retreats.
-                    </p>
-                  </div>
-                </div>
-              )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="mission"
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="grid md:grid-cols-12 gap-6 items-center"
+                  >
+                    <div className="md:col-span-8 space-y-3">
+                      <div className="flex items-center gap-2 text-[#EA580C] font-bold text-sm">
+                        <Compass className="w-5 h-5" />
+                        <span>Nurturing Students &amp; Healing Wards</span>
+                      </div>
+                      <p className="text-sm sm:text-base text-[#524C44] leading-relaxed">
+                        Our mission is to foster a Christ-centered sanctuary for healthcare students to grow spiritually, maintain emotional resilience through intense exams, intercede for critically ill hospital patients, and shine as salt and light across Dagmawi Menelik Health Science College.
+                      </p>
+                      <blockquote className="p-4 bg-[#FAF6EE] border border-[#E2D6C3] rounded-xl text-xs sm:text-sm text-[#0B0B0C] italic font-medium">
+                        &quot;Truly I tell you, whatever you did for one of the least of these brothers and sisters of mine, you did for me.&quot; — Matthew 25:40
+                      </blockquote>
+                    </div>
+                    <div className="md:col-span-4 bg-[#FAF6EE] rounded-2xl p-5 border border-[#E2D6C3]">
+                      <span className="text-xs font-bold text-[#EA580C] block uppercase tracking-wider">
+                        Core Ministries
+                      </span>
+                      <p className="text-xs text-[#524C44] mt-2 leading-relaxed">
+                        Wednesday Semen Muluwengel &amp; Genet worship (6:00 LT), Adult ICU prayer visits, small-group family circles, and annual retreats.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </ScrollReveal>
 
         {/* Success Stories — Testimonials fade and slide in */}
         <div className="space-y-6">
-          <ScrollReveal className="text-center max-w-xl mx-auto">
+          <ScrollReveal afterScroll className="text-center max-w-xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] font-display">
               Success Stories
             </span>
@@ -461,44 +467,41 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
 
           <div className="grid md:grid-cols-3 gap-5">
             {STUDENT_TESTIMONIES.map((story, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={story.id}
-                initial={
-                  prefersReducedMotion
-                    ? false
-                    : { opacity: 0, y: 30, x: idx === 0 ? -32 : idx === 2 ? 32 : 0 }
-                }
-                whileInView={{ opacity: 1, y: 0, x: 0 }}
-                viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
-                transition={{
-                  duration: 0.78,
-                  delay: prefersReducedMotion ? 0 : idx * 0.16,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="rounded-2xl p-6 bg-white border border-[#E2D6C3] shadow-sm flex flex-col justify-between space-y-4"
+                afterScroll
+                direction={idx === 0 ? 'fromLeft' : idx === 2 ? 'fromRight' : 'up'}
+                delay={idx * 0.06}
+                duration={0.42}
+                className="h-full"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-bold text-[#EA580C]">
-                    <span>{story.tag}</span>
-                    <Quote className="w-4 h-4 text-[#EA580C]/70" />
+                <motion.div
+                  whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+                  className="h-full rounded-2xl p-6 bg-white border border-[#E2D6C3] hover:border-[#EA580C]/50 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#EA580C]">
+                      <span>{story.tag}</span>
+                      <Quote className="w-4 h-4 text-[#EA580C]/70" />
+                    </div>
+                    <p className="text-xs sm:text-sm text-[#0B0B0C] leading-relaxed italic">
+                      &ldquo;{story.quote}&rdquo;
+                    </p>
                   </div>
-                  <p className="text-xs sm:text-sm text-[#0B0B0C] leading-relaxed italic">
-                    &ldquo;{story.quote}&rdquo;
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#F2EBE0]">
-                  <div className="font-display font-bold text-sm text-[#0B0B0C]">
-                    {story.name}
+                  <div className="pt-3 border-t border-[#F2EBE0]">
+                    <div className="font-display font-bold text-sm text-[#0B0B0C]">
+                      {story.name}
+                    </div>
+                    <div className="text-xs text-[#6C6358]">{story.cohort}</div>
                   </div>
-                  <div className="text-xs text-[#6C6358]">{story.cohort}</div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
 
         {/* FAQs Accordion */}
-        <ScrollReveal>
+        <ScrollReveal afterScroll>
           <div className="text-center max-w-xl mx-auto mb-8">
             <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] font-display">
               Questions &amp; Answers
@@ -526,17 +529,30 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                     aria-expanded={isOpen}
                   >
                     <span>{faq.q}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-[#EA580C] shrink-0 transition-transform ${
-                        isOpen ? 'rotate-180' : ''
-                      }`}
-                    />
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                      className="shrink-0"
+                    >
+                      <ChevronDown className="w-4 h-4 text-[#EA580C]" />
+                    </motion.span>
                   </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#524C44] border-t border-[#F2EBE0] leading-relaxed">
-                      {faq.a}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="faq-body"
+                        initial={prefersReducedMotion ? false : { height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 pb-5 pt-2 text-xs sm:text-sm text-[#524C44] border-t border-[#F2EBE0] leading-relaxed">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}
@@ -544,7 +560,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
         </ScrollReveal>
 
         {/* Final CTA — Background gradient slowly moves */}
-        <ScrollReveal>
+        <ScrollReveal afterScroll>
           <div className="animate-gradient-slow rounded-3xl p-7 sm:p-10 text-[#FAF6EE] border border-[#27272C] shadow-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
               <span className="text-xs font-bold uppercase tracking-wider text-[#FB923C] font-display block">
@@ -559,15 +575,19 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <button
+              <motion.button
                 type="button"
+                whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                 onClick={() => onScrollToSection('register')}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shadow-lg"
               >
                 <span>Enroll as a Member</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-              <a
+              </motion.button>
+              <motion.a
+                whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                 href={TELEGRAM_CHANNEL}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -575,7 +595,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
               >
                 <Send className="w-4 h-4 text-[#FB923C]" />
                 <span>Join @lursuesz</span>
-              </a>
+              </motion.a>
             </div>
           </div>
         </ScrollReveal>

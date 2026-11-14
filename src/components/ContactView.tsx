@@ -6,6 +6,7 @@ import {
   buildPrayerMessageLink,
 } from '../data/fellowshipData';
 import { CheckCircle2, ArrowRight, Share2, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface ContactViewProps {
@@ -13,6 +14,7 @@ interface ContactViewProps {
 }
 
 export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [feedbackType, setFeedbackType] = useState<FeedbackRecord['type']>('prayer-request');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
@@ -228,45 +230,72 @@ export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted })
           {/* Right Column: Cream Prayer & Feedback Box */}
           <ScrollReveal delay={0.08} className="md:col-span-7">
             <div className="bg-[#FAF6EE] text-[#0B0B0C] rounded-3xl p-6 sm:p-10 border border-[#E2D6C3] shadow-2xl">
-              {submitted ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-black font-display text-[#0B0B0C]">
-                    Ready to send
-                  </h3>
-                  <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                    Tap the button below to send your prayer request or message to the coordinator on Telegram. It reaches the team as soon as you press send in Telegram.
-                  </p>
-                  <div className="mt-5">
-                    <a
-                      href={buildPrayerMessageLink({
-                        type: feedbackType,
-                        message,
-                        name: name.trim() || undefined,
-                        phone: phone.trim() || undefined,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
+              <AnimatePresence mode="wait" initial={false}>
+                {submitted ? (
+                  <motion.div
+                    key="contact-success"
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-center py-8"
+                  >
+                    <motion.div
+                      initial={
+                        prefersReducedMotion
+                          ? false
+                          : { scale: 0.45, opacity: 0, rotate: -12 }
+                      }
+                      animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                      className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30"
                     >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>Send on Telegram</span>
-                    </a>
-                  </div>
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] hover:bg-[#EA580C] text-[#FAF6EE] font-bold text-xs sm:text-sm transition-colors"
-                    >
-                      Send Another Message
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
+                      <CheckCircle2 className="w-8 h-8" />
+                    </motion.div>
+                    <h3 className="text-2xl font-black font-display text-[#0B0B0C]">
+                      Ready to send
+                    </h3>
+                    <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
+                      Tap the button below to send your prayer request or message to the coordinator on Telegram. It reaches the team as soon as you press send in Telegram.
+                    </p>
+                    <div className="mt-5">
+                      <motion.a
+                        whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                        href={buildPrayerMessageLink({
+                          type: feedbackType,
+                          message,
+                          name: name.trim() || undefined,
+                          phone: phone.trim() || undefined,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Send on Telegram</span>
+                      </motion.a>
+                    </div>
+                    <div className="mt-4">
+                      <motion.button
+                        type="button"
+                        whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                        onClick={handleReset}
+                        className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] hover:bg-[#EA580C] text-[#FAF6EE] font-bold text-xs sm:text-sm transition-colors"
+                      >
+                        Send Another Message
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="contact-form"
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                    transition={{ duration: 0.18 }}
+                  >
                   <div className="mb-6 pb-4 border-b border-[#E2D6C3]">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">
                       Prayer &amp; Encouragement
@@ -346,10 +375,12 @@ export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted })
                     </div>
 
                     <div className="pt-2">
-                      <button
+                      <motion.button
                         type="submit"
+                        whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.01 }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                         disabled={isSubmitting}
-                        className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
+                        className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
                       >
                         {isSubmitting ? (
                           <span>Sending...</span>
@@ -359,11 +390,12 @@ export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted })
                             <ArrowRight className="w-4 h-4" />
                           </>
                         )}
-                      </button>
+                      </motion.button>
                     </div>
                   </form>
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </ScrollReveal>
         </div>

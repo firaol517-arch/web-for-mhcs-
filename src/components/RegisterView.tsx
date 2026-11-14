@@ -14,6 +14,7 @@ import {
 } from '../data/fellowshipData';
 import { isValidEmail, isValidPhoneNumber } from '../utils/fellowship';
 import { CheckCircle2, ArrowRight, Send as TelegramIcon, Copy, Check } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface RegisterViewProps {
@@ -25,6 +26,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({
   onScrollToSection,
   onRegistered,
 }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [fullName, setFullName] = useState('');
   const [department, setDepartment] = useState<MCSFDepartment>(MCSF_DEPARTMENTS[0]);
   const [academicYear, setAcademicYear] = useState<AcademicYear>(ACADEMIC_YEARS[0]);
@@ -147,14 +149,31 @@ College: Dagmawi Menelik Health Science College`;
         {/* Form Card */}
         <ScrollReveal>
           <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E2D6C3] shadow-lg">
-            {submittedRecord ? (
-              <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
-                  One last step, {submittedRecord.fullName.split(' ')[0]}!
-                </h3>
+            <AnimatePresence mode="wait" initial={false}>
+              {submittedRecord ? (
+                <motion.div
+                  key="register-success"
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-center py-6"
+                >
+                  <motion.div
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : { scale: 0.45, opacity: 0, rotate: -12 }
+                    }
+                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                    className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30"
+                  >
+                    <CheckCircle2 className="w-8 h-8" />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
+                    One last step, {submittedRecord.fullName.split(' ')[0]}!
+                  </h3>
                 <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
                   Your details are ready. Tap <strong>Send to Gedion</strong> below so the coordinators receive your registration and confirm your place in MCSF.
                 </p>
@@ -240,25 +259,38 @@ College: Dagmawi Menelik Health Science College`;
                 </div>
 
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                     onClick={() => onScrollToSection('family')}
                     className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] text-[#FAF6EE] font-bold text-xs sm:text-sm hover:bg-[#EA580C] transition-colors inline-flex items-center gap-2"
                   >
                     <span>Request a Family Circle</span>
                     <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
                     type="button"
+                    whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                     onClick={handleReset}
                     className="px-5 py-2.5 rounded-xl bg-[#FAF6EE] text-[#0B0B0C] border border-[#E2D6C3] text-xs sm:text-sm font-semibold hover:bg-[#F2EBE0] transition-colors"
                   >
                     Register Another Member
-                  </button>
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate className="space-y-6">
+              <motion.form
+                key="register-form"
+                initial={prefersReducedMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+                transition={{ duration: 0.18 }}
+                onSubmit={handleSubmit}
+                noValidate
+                className="space-y-6"
+              >
                 <div>
                   <label htmlFor="m-reg-name" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
                     Full Name <span className="text-[#EA580C]">*</span>
@@ -401,10 +433,12 @@ College: Dagmawi Menelik Health Science College`;
                 </div>
 
                 <div className="pt-2">
-                  <button
+                  <motion.button
                     type="submit"
+                    whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.01 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                     disabled={isSubmitting}
-                    className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
+                    className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
                   >
                     {isSubmitting ? (
                       <span>Submitting Registration...</span>
@@ -414,10 +448,11 @@ College: Dagmawi Menelik Health Science College`;
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 </div>
-              </form>
+              </motion.form>
             )}
+            </AnimatePresence>
           </div>
         </ScrollReveal>
       </div>

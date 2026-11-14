@@ -3,6 +3,7 @@ import { MCSF_PUBLICATIONS } from '../data/fellowshipData';
 import { DetailRoute } from '../types/fellowship';
 import { filterPublicationsList } from '../utils/fellowship';
 import { Heart, Search, Clock, MessageSquare, ArrowUpRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface PublicationsViewProps {
@@ -10,6 +11,7 @@ interface PublicationsViewProps {
 }
 
 export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -59,20 +61,33 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail
         {/* Filter & Search Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-[#0B0B0C] text-[#FAF6EE] font-bold shadow-sm'
-                    : 'bg-white text-[#524C44] border border-[#E2D6C3] hover:border-[#EA580C] hover:text-[#0B0B0C]'
-                }`}
-              >
-                {cat === 'all' ? 'All Reflections' : cat}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const isActive = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`relative px-4 py-1.5 rounded-xl text-xs whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'text-[#FAF6EE] font-bold'
+                      : 'bg-white text-[#524C44] font-semibold border border-[#E2D6C3] hover:border-[#EA580C] hover:text-[#0B0B0C]'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="pub-cat-pill"
+                      transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                      className="absolute inset-0 bg-[#0B0B0C] rounded-xl shadow-sm"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span className="relative z-10">
+                    {cat === 'all' ? 'All Reflections' : cat}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <div className="relative w-full sm:w-72">
@@ -83,24 +98,38 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by topic, author, ward..."
               aria-label="Search publications"
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#E2D6C3] text-xs text-[#0B0B0C] focus:outline-none focus:border-[#EA580C]"
+              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-[#E2D6C3] text-xs text-[#0B0B0C] focus:outline-none focus:border-[#EA580C] transition-colors"
             />
           </div>
         </div>
 
         {/* Articles Grid */}
         {filteredPubs.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-[#E2D6C3] text-sm text-[#524C44]">
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12 bg-white rounded-3xl border border-[#E2D6C3] text-sm text-[#524C44]"
+          >
             No matching reflections found. Try clearing your search filter.
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-6">
+          <div key={selectedCategory} className="grid md:grid-cols-3 gap-6">
             {filteredPubs.map((pub, idx) => {
               const likeInfo = likesMap[pub.id] || { count: pub.likes, liked: false };
               const commentsCount = (commentsMap[pub.id] || []).length;
 
               return (
-                <ScrollReveal key={pub.id} delay={idx * 0.06}>
+                <motion.div
+                  key={pub.id}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+                  transition={{
+                    duration: 0.28,
+                    delay: prefersReducedMotion ? 0 : Math.min((idx % 3) * 0.04, 0.12),
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
                   <button
                     type="button"
                     onClick={() =>
@@ -110,16 +139,18 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail
                         returnSection: 'publications',
                       })
                     }
-                    className="w-full text-left bg-white rounded-3xl overflow-hidden border border-[#E2D6C3] hover:border-[#EA580C] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group shadow-sm h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
+                    className="w-full text-left bg-white rounded-3xl overflow-hidden border border-[#E2D6C3] hover:border-[#EA580C] hover:shadow-lg transition-colors cursor-pointer flex flex-col justify-between group shadow-sm h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
                   >
                     <div>
                       {pub.coverImage && (
                         <div className="h-44 w-full bg-[#0B0B0C] overflow-hidden">
-                          <img loading="lazy" decoding="async"
+                          <img
+                            loading="lazy"
+                            decoding="async"
                             src={pub.coverImage}
                             alt={pub.title}
                             referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                       )}
@@ -158,11 +189,11 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail
 
                       <span className="inline-flex items-center gap-1 font-bold text-[#EA580C]">
                         <span>Read Article</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
+                        <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                       </span>
                     </div>
                   </button>
-                </ScrollReveal>
+                </motion.div>
               );
             })}
           </div>

@@ -71,7 +71,7 @@ export const DiscipleshipView: React.FC<DiscipleshipViewProps> = ({ onNavigate }
                 </p>
               </div>
 
-              <blockquote className="mt-5 p-4 rounded-xl bg-white/10 border-l-4 border-amber-300 text-xs sm:text-sm text-white/95 backdrop-blur-sm">
+              <blockquote className="mt-5 p-4 rounded-xl bg-white/15 border-l-4 border-amber-300 text-xs sm:text-sm text-white/95">
                 "For it is by grace you have been saved, through faith—and this is not from yourselves, it is the gift of God." — Ephesians 2:8
               </blockquote>
             </div>

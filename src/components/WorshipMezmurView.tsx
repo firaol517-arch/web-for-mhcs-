@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MEZMUR_SONGS, FELLOWSHIP_VIDEO, GALLERY_PHOTOS } from '../data/fellowshipData';
 import { DetailRoute, SectionId } from '../types/fellowship';
 import { Music, ExternalLink, Play, Pause, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface WorshipMezmurViewProps {
@@ -9,10 +10,49 @@ interface WorshipMezmurViewProps {
   onNavigateCategory: (section: SectionId) => void;
 }
 
+const EqualizerBars: React.FC<{ active: boolean; reducedMotion: boolean | null }> = ({
+  active,
+  reducedMotion,
+}) => {
+  const heights = [
+    [0.35, 0.95, 0.45, 0.85, 0.35],
+    [0.75, 0.35, 1.0, 0.45, 0.75],
+    [0.45, 0.85, 0.35, 0.95, 0.45],
+    [0.9, 0.4, 0.75, 0.35, 0.9],
+  ];
+
+  return (
+    <span className="inline-flex items-end gap-0.5 h-3.5" aria-hidden="true">
+      {heights.map((keyframes, barIdx) => (
+        <motion.span
+          key={barIdx}
+          className="w-0.5 rounded-full bg-[#FB923C] origin-bottom"
+          style={{ height: '14px' }}
+          animate={
+            active && !reducedMotion
+              ? { scaleY: keyframes }
+              : { scaleY: active ? 0.85 : 0.35 + (barIdx % 2) * 0.2 }
+          }
+          transition={
+            active && !reducedMotion
+              ? {
+                  duration: 0.9 + barIdx * 0.14,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+              : { duration: 0.25 }
+          }
+        />
+      ))}
+    </span>
+  );
+};
+
 export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
   onOpenDetail,
   onNavigateCategory,
 }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [activeEmbedId, setActiveEmbedId] = useState<string | null>(null);
 
   const worshipPhotos = GALLERY_PHOTOS.filter((p) =>
@@ -47,47 +87,74 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                 delay={idx * 0.08}
                 direction={idx % 2 === 0 ? 'fromLeft' : 'fromRight'}
               >
-                <div className="rounded-3xl overflow-hidden bg-[#0B0B0C] text-[#FAF6EE] border border-[#27272C] shadow-xl flex flex-col justify-between h-full">
+                <motion.div
+                  whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="rounded-3xl overflow-hidden bg-[#0B0B0C] text-[#FAF6EE] border border-[#27272C] hover:border-[#EA580C]/60 transition-colors shadow-xl flex flex-col justify-between h-full"
+                >
                   <div>
                     <div className="relative aspect-video w-full bg-black overflow-hidden">
-                      {isPlayingInline ? (
-                        <iframe
-                          src={`https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&rel=0`}
-                          title={`${song.title} — ${song.artist}`}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          className="w-full h-full border-0"
-                        />
-                      ) : (
-                        <>
-                          <img loading="lazy" decoding="async"
-                            src={thumbUrl}
-                            alt={`${song.title} — ${song.artist}`}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover"
+                      <AnimatePresence mode="wait">
+                        {isPlayingInline ? (
+                          <motion.iframe
+                            key="iframe"
+                            initial={prefersReducedMotion ? false : { opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                            transition={{ duration: 0.18 }}
+                            src={`https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&rel=0`}
+                            title={`${song.title} — ${song.artist}`}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="w-full h-full border-0"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-                          <button
-                            type="button"
-                            onClick={() => setActiveEmbedId(song.id)}
-                            aria-label={`Play ${song.title} inline`}
-                            className="absolute inset-0 flex items-center justify-center group"
+                        ) : (
+                          <motion.div
+                            key="thumb"
+                            initial={prefersReducedMotion ? false : { opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                            transition={{ duration: 0.16 }}
+                            className="relative w-full h-full"
                           >
-                            <span className="w-16 h-16 rounded-full bg-[#EA580C] group-hover:bg-[#C2410C] text-white flex items-center justify-center shadow-2xl group-hover:scale-105 transition-all">
-                              <Play className="w-7 h-7 fill-white ml-1" />
-                            </span>
-                          </button>
-                          <div className="absolute bottom-3 left-4 text-xs font-semibold text-[#FB923C]">
-                            {song.tag}
-                          </div>
-                        </>
-                      )}
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src={thumbUrl}
+                              alt={`${song.title} — ${song.artist}`}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+                            <button
+                              type="button"
+                              onClick={() => setActiveEmbedId(song.id)}
+                              aria-label={`Play ${song.title} inline`}
+                              className="absolute inset-0 flex items-center justify-center group"
+                            >
+                              <motion.span
+                                whileHover={prefersReducedMotion ? undefined : { scale: 1.08 }}
+                                whileTap={prefersReducedMotion ? undefined : { scale: 0.94 }}
+                                className="w-16 h-16 rounded-full bg-[#EA580C] group-hover:bg-[#C2410C] text-white flex items-center justify-center shadow-2xl transition-colors"
+                              >
+                                <Play className="w-7 h-7 fill-white ml-1" />
+                              </motion.span>
+                            </button>
+                            <div className="absolute bottom-3 left-4 text-xs font-semibold text-[#FB923C]">
+                              {song.tag}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     <div className="p-6 space-y-2.5">
-                      <div className="flex items-center gap-2 text-xs text-[#FB923C] font-semibold">
-                        <Music className="w-4 h-4" />
-                        <span>{song.artist}</span>
+                      <div className="flex items-center justify-between gap-2 text-xs text-[#FB923C] font-semibold">
+                        <div className="flex items-center gap-2">
+                          <Music className="w-4 h-4" />
+                          <span>{song.artist}</span>
+                        </div>
+                        <EqualizerBars active={isPlayingInline} reducedMotion={prefersReducedMotion} />
                       </div>
                       <h2 className="font-display font-black text-xl sm:text-2xl text-[#FAF6EE]">
                         {song.title}
@@ -99,7 +166,9 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                   </div>
 
                   <div className="px-6 pb-6 pt-3 border-t border-[#27272C] flex flex-wrap items-center gap-3">
-                    <a
+                    <motion.a
+                      whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.02 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                       href={song.url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -107,10 +176,12 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                     >
                       <span>Listen on YouTube</span>
                       <ExternalLink className="w-4 h-4" />
-                    </a>
+                    </motion.a>
 
-                    <button
+                    <motion.button
                       type="button"
+                      whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.02 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                       onClick={() => setActiveEmbedId(isPlayingInline ? null : song.id)}
                       className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#141417] hover:bg-[#27272C] text-[#FAF6EE] border border-[#27272C] text-xs font-semibold transition-colors whitespace-nowrap"
                     >
@@ -125,9 +196,9 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                           <span>Play Here</span>
                         </>
                       )}
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               </ScrollReveal>
             );
           })}
@@ -148,14 +219,16 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                   {FELLOWSHIP_VIDEO.description}
                 </p>
                 <div className="pt-2">
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                    whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
                     onClick={() => onNavigateCategory('events')}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors"
                   >
                     <span>See Wednesday Worship Time</span>
                     <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
