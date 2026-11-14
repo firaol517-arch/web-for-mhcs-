@@ -19,7 +19,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks: { section: SectionId; label: string }[] = [
-    { section: 'hero', label: 'All Categories' },
     { section: 'about', label: 'About' },
     { section: 'worship', label: 'Mezmur' },
     { section: 'hospital', label: 'Ministry' },
