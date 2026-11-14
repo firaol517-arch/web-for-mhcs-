@@ -55,7 +55,7 @@ export const HospitalMinistryView: React.FC<HospitalMinistryViewProps> = ({
                         reverse ? 'md:order-2' : ''
                       }`}
                     >
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={ministry.image}
                         alt={ministry.title}
                         referrerPolicy="no-referrer"

@@ -57,6 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={link.section}
                 type="button"
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => handleLinkClick(link.section)}
                 className={`py-1 whitespace-nowrap shrink-0 transition-colors border-b-2 ${
                   isActive

@@ -137,7 +137,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ onOpenDetail }) => {
                 >
                   {evt.image && (
                     <div className="relative h-44 w-full bg-[#0B0B0C] overflow-hidden">
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={evt.image}
                         alt={evt.title}
                         referrerPolicy="no-referrer"

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { DetailRoute, SectionId } from './types/fellowship';
 import { buildDetailHash, parseDetailHash } from './utils/fellowship';
 import { Navbar } from './components/Navbar';
 import { CategoryHub } from './components/CategoryHub';
-import { AboutSection } from './components/AboutSection';
-import { WorshipMezmurView } from './components/WorshipMezmurView';
-import { HospitalMinistryView } from './components/HospitalMinistryView';
-import { EventsView } from './components/EventsView';
-import { FamilyView } from './components/FamilyView';
-import { GalleryView } from './components/GalleryView';
-import { PublicationsView } from './components/PublicationsView';
-import { RegisterView } from './components/RegisterView';
-import { ContactView } from './components/ContactView';
-import { DetailView } from './components/DetailView';
-import { AdminPortal } from './components/AdminPortal';
+const AboutSection = lazy(() => import('./components/AboutSection').then((m) => ({ default: m.AboutSection })));
+const WorshipMezmurView = lazy(() => import('./components/WorshipMezmurView').then((m) => ({ default: m.WorshipMezmurView })));
+const HospitalMinistryView = lazy(() => import('./components/HospitalMinistryView').then((m) => ({ default: m.HospitalMinistryView })));
+const EventsView = lazy(() => import('./components/EventsView').then((m) => ({ default: m.EventsView })));
+const FamilyView = lazy(() => import('./components/FamilyView').then((m) => ({ default: m.FamilyView })));
+const GalleryView = lazy(() => import('./components/GalleryView').then((m) => ({ default: m.GalleryView })));
+const PublicationsView = lazy(() => import('./components/PublicationsView').then((m) => ({ default: m.PublicationsView })));
+const RegisterView = lazy(() => import('./components/RegisterView').then((m) => ({ default: m.RegisterView })));
+const ContactView = lazy(() => import('./components/ContactView').then((m) => ({ default: m.ContactView })));
+const DetailView = lazy(() => import('./components/DetailView').then((m) => ({ default: m.DetailView })));
+const AdminPortal = lazy(() => import('./components/AdminPortal').then((m) => ({ default: m.AdminPortal })));
 import { Footer } from './components/Footer';
 import { ArrowLeft } from 'lucide-react';
 
@@ -43,6 +43,16 @@ const CATEGORY_TITLES: Record<SectionId, string> = {
   contact: 'Contact & Prayer Desk',
 };
 
+const SITE_NAME = 'MCSF Fellowship | Dagmawi Menelik Health Science College';
+
+function PageFallback() {
+  return (
+    <div className="min-h-[50vh] flex items-center justify-center text-sm text-[#524C44]" role="status">
+      Loading…
+    </div>
+  );
+}
+
 function parseInitialSection(): SectionId {
   const clean = window.location.hash.replace('#', '').toLowerCase();
   if (SECTION_IDS.includes(clean as SectionId)) {
@@ -61,6 +71,18 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<SectionId>(() =>
     parseInitialSection()
   );
+
+  useEffect(() => {
+    if (isAdminOpen) {
+      document.title = `Coordinator Records | ${SITE_NAME}`;
+    } else if (activeDetail) {
+      document.title = SITE_NAME;
+    } else if (activeSection === 'hero') {
+      document.title = SITE_NAME;
+    } else {
+      document.title = `${CATEGORY_TITLES[activeSection]} | MCSF Fellowship`;
+    }
+  }, [activeSection, activeDetail, isAdminOpen]);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -189,6 +211,7 @@ export default function App() {
       />
 
       <main className="flex-1 overflow-x-clip">
+        <Suspense fallback={<PageFallback />}>
         {isAdminOpen ? (
           <AdminPortal onBack={() => navigateToCategory('hero')} />
         ) : activeDetail ? (
@@ -234,6 +257,7 @@ export default function App() {
             {renderCategoryView()}
           </>
         )}
+        </Suspense>
       </main>
 
       <Footer
