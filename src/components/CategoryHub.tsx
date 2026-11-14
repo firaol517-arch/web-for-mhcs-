@@ -152,8 +152,8 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
     {
       id: 'family',
       title: 'Family Day & Circles',
-      subtitle: 'Small-group circles, Crown celebrations, First Year Anniversary, and placement form.',
-      meta: '6 Family Stories + Join Form',
+      subtitle: 'Small-group circles, Crown celebrations, First Year Anniversary, and Telegram bot registration.',
+      meta: '6 Family Stories + Bot Join',
       icon: Users,
     },
     {

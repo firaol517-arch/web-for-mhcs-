@@ -1,19 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { DetailRoute, SectionId } from '../types/fellowship';
 import {
-  DetailRoute,
-  FamilyRequestRecord,
-  MCSFDepartment,
-  SectionId,
-} from '../types/fellowship';
-import {
-  MCSF_DEPARTMENTS,
-  ACADEMIC_YEARS,
   GALLERY_PHOTOS,
-  buildFamilyRequestLink,
+  TELEGRAM_REGISTRATION_BOT,
+  TELEGRAM_REGISTRATION_BOT_HANDLE,
 } from '../data/fellowshipData';
-import { isValidEmail, isValidPhoneNumber } from '../utils/fellowship';
-import { CheckCircle2, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { Bot, Send, ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
 
 interface FamilyViewProps {
@@ -25,18 +18,8 @@ interface FamilyViewProps {
 export const FamilyView: React.FC<FamilyViewProps> = ({
   onScrollToSection,
   onOpenDetail,
-  onRequestSubmitted,
 }) => {
   const prefersReducedMotion = useReducedMotion();
-  const [fullName, setFullName] = useState('');
-  const [department, setDepartment] = useState<MCSFDepartment>(MCSF_DEPARTMENTS[0]);
-  const [academicYear, setAcademicYear] = useState<string>(ACADEMIC_YEARS[0]);
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [dutyShiftNotes, setDutyShiftNotes] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const familyShowcaseIds = [
     'family-day-arts-room',
@@ -48,64 +31,6 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
   ];
 
   const familyMoments = GALLERY_PHOTOS.filter((p) => familyShowcaseIds.includes(p.id));
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-
-    if (!fullName.trim()) newErrors.fullName = 'Please enter your full name.';
-    if (!phone.trim()) {
-      newErrors.phone = 'Please provide a valid phone number.';
-    } else if (!isValidPhoneNumber(phone)) {
-      newErrors.phone = 'Please enter a valid phone number (e.g. 09xxxxxxxx or +251...).';
-    }
-
-    if (!email.trim()) {
-      newErrors.email = 'Please provide an email address.';
-    } else if (!isValidEmail(email)) {
-      newErrors.email = 'Please enter a valid email address.';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setErrors({});
-    setIsSubmitting(true);
-
-    const record: FamilyRequestRecord = {
-      id: 'fam-' + Date.now(),
-      fullName: fullName.trim(),
-      department,
-      academicYear,
-      phone: phone.trim(),
-      email: email.trim(),
-      dutyShiftNotes: dutyShiftNotes.trim() || undefined,
-      submittedAt: new Date().toISOString(),
-    };
-
-    try {
-      const existing = JSON.parse(localStorage.getItem('mcsf_family_requests') || '[]');
-      existing.unshift(record);
-      localStorage.setItem('mcsf_family_requests', JSON.stringify(existing));
-    } catch {}
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      if (onRequestSubmitted) onRequestSubmitted();
-    }, 400);
-  };
-
-  const handleReset = () => {
-    setFullName('');
-    setPhone('');
-    setEmail('');
-    setDutyShiftNotes('');
-    setSubmitted(false);
-    setErrors({});
-  };
 
   return (
     <section
@@ -170,234 +95,65 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
           ))}
         </div>
 
-        {/* Placement Request Form */}
+        {/* Direct Telegram Bot Registration for Family Circles (Zero On-Site Form) */}
         <ScrollReveal>
-          <div className="rounded-3xl p-6 sm:p-10 bg-white border border-[#E2D6C3] shadow-lg max-w-2xl mx-auto">
-            <AnimatePresence mode="wait" initial={false}>
-              {submitted ? (
-                <motion.div
-                  key="family-success"
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-center py-8"
-                >
-                  <motion.div
-                    initial={
-                      prefersReducedMotion
-                        ? false
-                        : { scale: 0.45, opacity: 0, rotate: -12 }
-                    }
-                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-                    className="w-16 h-16 rounded-full bg-[#FFF1E6] text-[#EA580C] mx-auto flex items-center justify-center mb-4 border border-[#EA580C]/30"
-                  >
-                    <CheckCircle2 className="w-8 h-8" />
-                  </motion.div>
-                  <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
-                    Almost there!
-                  </h3>
-                  <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                    Thank you, <strong>{fullName}</strong>. Tap the button below to send your family circle request to the coordinator on Telegram so they can introduce you to your circle.
-                  </p>
+          <div className="rounded-3xl p-7 sm:p-10 bg-white border border-[#E2D6C3] shadow-lg max-w-2xl mx-auto text-center space-y-6">
+            <div className="w-14 h-14 rounded-2xl bg-[#0B0B0C] text-[#FB923C] mx-auto flex items-center justify-center shadow-md">
+              <Bot className="w-7 h-7" />
+            </div>
 
-                  <div className="mt-6">
-                    <motion.a
-                      whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
-                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                      href={buildFamilyRequestLink({
-                        fullName,
-                        department,
-                        academicYear,
-                        phone,
-                        email,
-                        dutyShiftNotes: dutyShiftNotes.trim() || undefined,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
-                    >
-                      Send request to Gedion on Telegram
-                    </motion.a>
-                  </div>
+            <div className="space-y-2 max-w-md mx-auto">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] block">
+                Family Placement via Telegram Bot
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-black font-display text-[#0B0B0C]">
+                Join an MCSF Family Circle
+              </h3>
+              <p className="text-xs sm:text-sm text-[#524C44] leading-relaxed">
+                All Family Circle sign-ups are handled directly inside{' '}
+                <strong>{TELEGRAM_REGISTRATION_BOT_HANDLE}</strong> — no website form to fill out.
+              </p>
+            </div>
 
-                  <div className="mt-6 flex flex-wrap justify-center gap-3">
-                    <motion.button
-                      type="button"
-                      whileHover={prefersReducedMotion ? undefined : { y: -1 }}
-                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                      onClick={() => onScrollToSection('gallery')}
-                      className="px-5 py-2.5 rounded-xl bg-[#0B0B0C] text-[#FAF6EE] font-bold text-xs sm:text-sm hover:bg-[#EA580C] transition-colors"
-                    >
-                      Browse Full Gallery
-                    </motion.button>
-                    <motion.button
-                      type="button"
-                      whileHover={prefersReducedMotion ? undefined : { y: -1 }}
-                      whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                      onClick={handleReset}
-                      className="px-5 py-2.5 rounded-xl bg-[#FAF6EE] text-[#0B0B0C] border border-[#E2D6C3] font-semibold text-xs sm:text-sm hover:bg-[#F2EBE0] transition-colors"
-                    >
-                      Submit Another Request
-                    </motion.button>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="family-form"
-                  initial={prefersReducedMotion ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
-                  transition={{ duration: 0.18 }}
+            <div className="grid sm:grid-cols-3 gap-3 text-left max-w-xl mx-auto">
+              {[
+                'Department & year matching',
+                'Clinical shift-friendly groups',
+                'Instant bot confirmation',
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center gap-2 p-3 rounded-xl bg-[#FAF6EE] border border-[#E2D6C3] text-xs font-semibold text-[#0B0B0C]"
                 >
-                <div className="mb-6 pb-4 border-b border-[#F2EBE0]">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C]">
-                    Family Placement Request
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-bold font-display text-[#0B0B0C] mt-1">
-                    Join an MCSF Family Circle
-                  </h3>
-                  <p className="text-xs text-[#524C44] mt-1">
-                    Connect with brothers and sisters in your department or clinical rotation shift.
-                  </p>
+                  <CheckCircle2 className="w-4 h-4 text-[#EA580C] shrink-0" />
+                  <span>{item}</span>
                 </div>
+              ))}
+            </div>
 
-                <form onSubmit={handleSubmit} noValidate className="space-y-4">
-                  <div>
-                    <label htmlFor="m-fam-name" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                      Full Name <span className="text-[#EA580C]">*</span>
-                    </label>
-                    <input
-                      id="m-fam-name"
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Martha Haile"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-[#FAF6EE] text-[#0B0B0C] focus:outline-none transition-all ${
-                        errors.fullName
-                          ? 'border-rose-500'
-                          : 'border-[#E2D6C3] focus:border-[#EA580C]'
-                      }`}
-                    />
-                    {errors.fullName && <p className="text-xs text-rose-600 mt-1">{errors.fullName}</p>}
-                  </div>
+            <div className="pt-1 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <motion.a
+                href={TELEGRAM_REGISTRATION_BOT}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.02 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow-md"
+              >
+                <Send className="w-4 h-4" />
+                <span>Register Family on {TELEGRAM_REGISTRATION_BOT_HANDLE}</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </motion.a>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="m-fam-dept" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                        Department <span className="text-[#EA580C]">*</span>
-                      </label>
-                      <select
-                        id="m-fam-dept"
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value as MCSFDepartment)}
-                        className="w-full px-3 py-2.5 rounded-xl border border-[#E2D6C3] bg-[#FAF6EE] text-[#0B0B0C] text-xs sm:text-sm focus:outline-none focus:border-[#EA580C]"
-                      >
-                        {MCSF_DEPARTMENTS.map((d) => (
-                          <option key={d} value={d}>
-                            {d}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label htmlFor="m-fam-year" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                        Academic Year <span className="text-[#EA580C]">*</span>
-                      </label>
-                      <select
-                        id="m-fam-year"
-                        value={academicYear}
-                        onChange={(e) => setAcademicYear(e.target.value)}
-                        className="w-full px-3 py-2.5 rounded-xl border border-[#E2D6C3] bg-[#FAF6EE] text-[#0B0B0C] text-xs sm:text-sm focus:outline-none focus:border-[#EA580C]"
-                      >
-                        {ACADEMIC_YEARS.map((y) => (
-                          <option key={y} value={y}>
-                            {y}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="m-fam-phone" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                        Phone Number <span className="text-[#EA580C]">*</span>
-                      </label>
-                      <input
-                        id="m-fam-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="e.g. 0911 234 567"
-                        className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-[#FAF6EE] text-[#0B0B0C] focus:outline-none transition-all ${
-                          errors.phone
-                            ? 'border-rose-500'
-                            : 'border-[#E2D6C3] focus:border-[#EA580C]'
-                        }`}
-                      />
-                      {errors.phone && <p className="text-xs text-rose-600 mt-1">{errors.phone}</p>}
-                    </div>
-
-                    <div>
-                      <label htmlFor="m-fam-email" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                        Email Address <span className="text-[#EA580C]">*</span>
-                      </label>
-                      <input
-                        id="m-fam-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="student@gmail.com"
-                        className={`w-full px-4 py-2.5 rounded-xl border text-sm bg-[#FAF6EE] text-[#0B0B0C] focus:outline-none transition-all ${
-                          errors.email
-                            ? 'border-rose-500'
-                            : 'border-[#E2D6C3] focus:border-[#EA580C]'
-                        }`}
-                      />
-                      {errors.email && <p className="text-xs text-rose-600 mt-1">{errors.email}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="m-fam-duty" className="block text-xs font-semibold text-[#0B0B0C] mb-1">
-                      Clinical Duty &amp; Shift Preferences{' '}
-                      <span className="text-[#6C6358] font-normal">(optional)</span>
-                    </label>
-                    <textarea
-                      id="m-fam-duty"
-                      rows={3}
-                      value={dutyShiftNotes}
-                      onChange={(e) => setDutyShiftNotes(e.target.value)}
-                      placeholder="e.g. Wednesday night duty, free weekends, or campus dormitory..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-[#E2D6C3] bg-[#FAF6EE] text-[#0B0B0C] text-xs sm:text-sm focus:outline-none focus:border-[#EA580C] transition-all resize-y"
-                    />
-                  </div>
-
-                  <div className="pt-2">
-                    <motion.button
-                      type="submit"
-                      whileHover={prefersReducedMotion ? undefined : { y: -1, scale: 1.01 }}
-                      whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
-                      disabled={isSubmitting}
-                      className="w-full py-3.5 px-6 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 disabled:opacity-70"
-                    >
-                      {isSubmitting ? (
-                        <span>Submitting Request...</span>
-                      ) : (
-                        <>
-                          <span>Submit Family Request</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </motion.button>
-                  </div>
-                </form>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              <button
+                type="button"
+                onClick={() => onScrollToSection('gallery')}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-3.5 rounded-xl bg-[#0B0B0C] hover:bg-[#EA580C] text-[#FAF6EE] font-bold text-xs sm:text-sm transition-colors"
+              >
+                <span>Browse Full Gallery</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </ScrollReveal>
       </div>
