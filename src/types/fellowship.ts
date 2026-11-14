@@ -85,6 +85,7 @@ export interface RegistrationRecord {
   teams: MCSFMinistryTeam[];
   phone: string;
   email: string;
+  telegramUsername?: string;
   registeredAt: string;
   status: 'active' | 'pending-review' | 'contacted';
   notes?: string;

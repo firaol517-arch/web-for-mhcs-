@@ -79,19 +79,46 @@ test('publication filtering filters by category and search query', () => {
   assert.equal(searched[0].id, '2');
 });
 
-test('buildTelegramRegistrationLink generates correct link with Gedion handle', async () => {
-  const { buildTelegramRegistrationLink } = await import('../data/fellowshipData.js');
-  const link = buildTelegramRegistrationLink({
+test('Telegram link builders generate prefilled deep links for registration, family circle, and prayer desk', async () => {
+  const {
+    buildTelegramRegistrationLink,
+    buildFamilyRequestLink,
+    buildPrayerMessageLink,
+  } = await import('../data/fellowshipData.js');
+
+  const regLink = buildTelegramRegistrationLink({
     fullName: 'Ruth Bekele',
     department: 'Pharmacy',
     academicYear: 'Year 2',
     teams: ['Prayer & Intercession'],
     phone: '0911223344',
-    email: 'ruth@gmail.com'
+    email: 'ruth@gmail.com',
+    notes: 'Acoustic guitar',
   });
-  assert.equal(link.startsWith('https://t.me/Gedion98?text='), true);
-  assert.equal(link.includes(encodeURIComponent('Ruth Bekele')), true);
-  assert.equal(link.includes(encodeURIComponent('Pharmacy')), true);
+  assert.equal(regLink.startsWith('https://t.me/Gedion98?text='), true);
+  assert.equal(regLink.includes(encodeURIComponent('Ruth Bekele')), true);
+  assert.equal(regLink.includes(encodeURIComponent('Pharmacy')), true);
+  assert.equal(regLink.includes(encodeURIComponent('Acoustic guitar')), true);
+
+  const famLink = buildFamilyRequestLink({
+    fullName: 'Martha Haile',
+    department: 'Nursing & Adult ICU',
+    academicYear: 'Year 3 (Clerkship)',
+    phone: '0944556677',
+    email: 'martha@gmail.com',
+    dutyShiftNotes: 'Tuesday evenings',
+  });
+  assert.equal(famLink.startsWith('https://t.me/Gedion98?text='), true);
+  assert.equal(famLink.includes(encodeURIComponent('Martha Haile')), true);
+  assert.equal(famLink.includes(encodeURIComponent('Tuesday evenings')), true);
+
+  const prayerLink = buildPrayerMessageLink({
+    type: 'prayer-request',
+    message: 'Please pray for ICU patients',
+    name: 'Selam',
+  });
+  assert.equal(prayerLink.startsWith('https://t.me/Bemnet1961?text='), true);
+  assert.equal(prayerLink.includes(encodeURIComponent('Please pray for ICU patients')), true);
 });
 
 test('detail hash helpers round-trip detail routes and reject malformed hashes', () => {

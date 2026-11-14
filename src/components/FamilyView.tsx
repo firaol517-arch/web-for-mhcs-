@@ -144,8 +144,8 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                     referrerPolicy="no-referrer"
                     initial={prefersReducedMotion ? false : { scale: 1.12, opacity: 0.7 }}
                     whileInView={{ scale: 1, opacity: 1 }}
-                    viewport={{ once: true, amount: 'some' }}
-                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true, amount: 'some', margin: '0px 0px -85px 0px' }}
+                    transition={{ duration: 1.05, ease: [0.22, 1, 0.36, 1] }}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />

@@ -16,8 +16,8 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToSection, onOpenAdmin }
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-12 border-b border-[#27272C]">
           {/* Brand Info */}
           <div className="col-span-2 md:col-span-5 space-y-4">
-            <div className="flex items-center gap-3">
-              <McsfLogo variant="badge" />
+            <div className="flex items-center gap-3.5">
+              <McsfLogo size="lg" variant="full" />
               <div>
                 <span className="font-display font-black text-lg text-[#FAF6EE] block">
                   MCSF Fellowship

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SectionId } from '../types/fellowship';
 import { Menu, X } from 'lucide-react';
 import { McsfLogo } from './McsfLogo';
+import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react';
 
 interface NavbarProps {
   activeSection: SectionId;
@@ -17,6 +18,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onReturnHome,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 28,
+    restDelta: 0.001,
+  });
 
   const navLinks: { section: SectionId; label: string }[] = [
     { section: 'about', label: 'About' },
@@ -33,8 +41,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0B0B0C]/95 backdrop-blur-md text-[#FAF6EE] border-b border-[#27272C]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4 sm:gap-8">
+    <header className="sticky top-0 z-50 bg-[#0B0B0C]/95 backdrop-blur-md text-[#FAF6EE] border-b border-white/10">
+      {!prefersReducedMotion && (
+        <motion.div
+          aria-hidden="true"
+          style={{ scaleX: smoothProgress }}
+          className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-[#EA580C] via-[#FB923C] to-[#EA580C] pointer-events-none"
+        />
+      )}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 md:gap-4 lg:gap-8">
         {/* Zone 1: Clean single-line brand wordmark with emblem */}
         <button
           type="button"
@@ -47,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Zone 2: Concise single-line category links */}
         <nav
-          className="hidden md:flex items-center gap-5 text-sm font-medium text-[#E2D6C3]"
+          className="hidden md:flex items-center gap-3.5 lg:gap-7 text-sm font-medium text-[#E2D6C3]"
           aria-label="Primary Navigation"
         >
           {navLinks.map((link) => {
@@ -75,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleLinkClick('register')}
-            className="px-4 py-2 rounded-lg bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shrink-0 shadow-sm"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shrink-0 shadow-sm"
           >
             Register
           </button>

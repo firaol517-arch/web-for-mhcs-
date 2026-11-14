@@ -95,63 +95,56 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
   ];
 
   return (
-    <section
-      id="categories"
-      className="py-12 md:py-16 bg-[#FAF6EE] text-[#0B0B0C] border-b border-[#E2D6C3]"
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
-        {/* Section header */}
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-5"
-        >
-          <div>
-            <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#EA580C] font-display block mb-2">
+    <section id="categories" className="scroll-mt-16 py-10 md:py-14 bg-[#FAF6EE] text-[#0B0B0C]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Category Directory Header */}
+        <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="max-w-2xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#EA580C] font-display block mb-1">
               All Categories
             </span>
-            <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-[#0B0B0C] text-balance">
+            <h2 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[#0B0B0C]">
               Explore MCSF Fellowship Pages
-            </h1>
+            </h2>
           </div>
           <button
             type="button"
             onClick={() => onSelectCategory('register')}
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-sm font-bold transition-colors whitespace-nowrap shadow-md self-start sm:self-auto"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap self-start md:self-auto"
           >
             <span>Member Registration</span>
             <ArrowUpRight className="w-4 h-4" />
           </button>
-        </motion.div>
+        </ScrollReveal>
 
-        {/* Category cards */}
+        {/* Category Cards Grid — Cards animate one after another */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {categories.map((cat, idx) => {
             const Icon = cat.icon;
             return (
               <motion.div
                 key={cat.id}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 'some', margin: '0px 0px -85px 0px' }}
                 transition={{
-                  duration: 0.38,
-                  delay: prefersReducedMotion ? 0 : 0.06 + idx * 0.05,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.72,
+                  delay: prefersReducedMotion ? 0 : (idx % 4) * 0.12,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
                 className="h-full"
               >
                 <button
                   type="button"
                   onClick={() => onSelectCategory(cat.id)}
-                  className={`w-full text-left rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] ${
+                  className={`w-full text-left rounded-2xl p-5 border transition-all h-full flex flex-col justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] ${
                     cat.accent
                       ? 'bg-[#0B0B0C] text-[#FAF6EE] border-[#27272C] hover:border-[#EA580C] shadow-lg'
                       : 'bg-white text-[#0B0B0C] border-[#E2D6C3] hover:border-[#EA580C] hover:shadow-md'
                   }`}
                 >
                   <div>
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-center justify-between gap-2 mb-4">
                       <span
                         className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                           cat.accent
@@ -161,14 +154,17 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
                       >
                         <Icon className="w-5 h-5" />
                       </span>
-                      <ArrowUpRight className="w-4 h-4 text-[#EA580C] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      <ArrowUpRight
+                        className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
+                          cat.accent ? 'text-[#FB923C]' : 'text-[#EA580C]'
+                        }`}
+                      />
                     </div>
-
-                    <h2 className="mt-6 font-display font-bold text-xl group-hover:text-[#EA580C] transition-colors">
+                    <h3 className="font-display font-bold text-base sm:text-lg group-hover:text-[#EA580C] transition-colors">
                       {cat.title}
-                    </h2>
+                    </h3>
                     <p
-                      className={`mt-2 text-sm leading-relaxed ${
+                      className={`mt-1.5 text-xs leading-relaxed ${
                         cat.accent ? 'text-[#E2D6C3]/80' : 'text-[#524C44]'
                       }`}
                     >
@@ -176,7 +172,7 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
                     </p>
                   </div>
                   <div
-                    className={`mt-6 pt-4 border-t text-sm font-bold ${
+                    className={`mt-4 pt-3 border-t text-[11px] font-bold ${
                       cat.accent
                         ? 'border-[#27272C] text-[#FB923C]'
                         : 'border-[#F2EBE0] text-[#EA580C]'

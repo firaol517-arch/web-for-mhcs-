@@ -104,49 +104,47 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
             referrerPolicy="no-referrer"
             initial={prefersReducedMotion ? false : { scale: 1.15, opacity: 0.35 }}
             whileInView={{ scale: 1, opacity: 0.75 }}
-            viewport={{ once: true, amount: 'some' }}
-            transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 'some', margin: '0px 0px -60px 0px' }}
+            transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/55 to-[#0B0B0C]/25" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C]/85 via-transparent to-[#0B0B0C]/35" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-14 md:py-20">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 md:py-16">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <ScrollReveal className="lg:col-span-7 space-y-4">
-              <div className="rounded-3xl p-6 sm:p-8 bg-[#0B0B0C]/75 backdrop-blur-sm border border-white/10 space-y-4 shadow-xl">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#FB923C] font-display block">
-                  About Our Fellowship
-                </span>
-                <h2 className="text-2xl sm:text-4xl font-black font-display tracking-tight text-[#FAF6EE] leading-tight text-balance">
-                  Dagmawi Menelik Health Science College Christian Students Fellowship
-                </h2>
-                <div className="space-y-3 text-[#FAF6EE]/90 text-sm sm:text-base leading-relaxed">
-                  <p>
-                    <strong className="text-[#FAF6EE]">Menelik Christian Students Fellowship (MCSF)</strong> is the vibrant spiritual family for Christian students training in medicine, surgery, clinical nursing, pharmacy, anesthesia, medical laboratory technology, and public health in Addis Ababa, Ethiopia.
-                  </p>
-                  <p>
-                    We believe healthcare is a sacred calling. As we study anatomy, diagnostics, pharmacology, and clinical care, we anchor our lives in prayer, ethical integrity, and genuine empathy for hospitalized patients and their families.
-                  </p>
-                </div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#FB923C] font-display block">
+                About Our Fellowship
+              </span>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black font-display tracking-tight text-[#FAF6EE] leading-[1.08] text-balance">
+                Dagmawi Menelik Health Science College Christian Students Fellowship
+              </h2>
+              <div className="space-y-3 text-[#FAF6EE]/90 text-sm sm:text-base leading-relaxed max-w-2xl">
+                <p>
+                  <strong className="text-[#FAF6EE]">Menelik Christian Students Fellowship (MCSF)</strong> is the vibrant spiritual family for Christian students training in medicine, surgery, clinical nursing, pharmacy, anesthesia, medical laboratory technology, and public health in Addis Ababa, Ethiopia.
+                </p>
+                <p>
+                  We believe healthcare is a sacred calling. As we study anatomy, diagnostics, pharmacology, and clinical care, we anchor our lives in prayer, ethical integrity, and genuine empathy for hospitalized patients and their families.
+                </p>
+              </div>
 
-                <div className="pt-2 flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={() => onScrollToSection('hospital')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] text-white text-xs sm:text-sm font-bold hover:bg-[#C2410C] transition-colors whitespace-nowrap"
-                  >
-                    <span>Explore Hospital Care</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onScrollToSection('family')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#141417]/90 hover:bg-[#27272C] text-[#FAF6EE] border border-[#27272C] text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
-                  >
-                    <span>Join a Family Circle</span>
-                  </button>
-                </div>
+              <div className="pt-2 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => onScrollToSection('hospital')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] text-white text-xs sm:text-sm font-bold hover:bg-[#C2410C] transition-colors whitespace-nowrap shadow-lg"
+                >
+                  <span>Explore Hospital Care</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onScrollToSection('family')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#141417]/90 hover:bg-[#27272C] text-[#FAF6EE] border border-[#27272C] text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
+                >
+                  <span>Join a Family Circle</span>
+                </button>
               </div>
             </ScrollReveal>
 
@@ -244,7 +242,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                   <ScrollReveal
                     key={flyer.id}
                     direction={idx % 2 === 0 ? 'fromLeft' : 'fromRight'}
-                    delay={idx * 0.08}
+                    delay={idx * 0.14}
                   >
                     <button
                       type="button"
@@ -305,13 +303,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
             {HOW_IT_WORKS_STEPS.map((item, idx) => (
               <motion.div
                 key={item.step}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 20, scale: 0.96 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 30, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 'some', margin: '80px 0px 40px 0px' }}
+                viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
                 transition={{
-                  duration: 0.42,
-                  delay: prefersReducedMotion ? 0 : idx * 0.14,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.72,
+                  delay: prefersReducedMotion ? 0 : idx * 0.18,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
                 className="rounded-2xl p-5 bg-white border border-[#E2D6C3] shadow-sm flex flex-col justify-between space-y-3"
               >
@@ -323,10 +321,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                         : { backgroundColor: '#F2EBE0', color: '#0B0B0C' }
                     }
                     whileInView={{ backgroundColor: '#EA580C', color: '#FFFFFF' }}
-                    viewport={{ once: true, amount: 'some' }}
+                    viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
                     transition={{
-                      duration: 0.35,
-                      delay: prefersReducedMotion ? 0 : idx * 0.14 + 0.15,
+                      duration: 0.55,
+                      delay: prefersReducedMotion ? 0 : idx * 0.18 + 0.2,
                     }}
                     className="w-9 h-9 rounded-xl font-display font-black text-xs flex items-center justify-center shadow-sm"
                   >
@@ -468,14 +466,14 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                 initial={
                   prefersReducedMotion
                     ? false
-                    : { opacity: 0, y: 20, x: idx === 0 ? -18 : idx === 2 ? 18 : 0 }
+                    : { opacity: 0, y: 30, x: idx === 0 ? -32 : idx === 2 ? 32 : 0 }
                 }
                 whileInView={{ opacity: 1, y: 0, x: 0 }}
-                viewport={{ once: true, amount: 'some', margin: '80px 0px 40px 0px' }}
+                viewport={{ once: true, amount: 'some', margin: '0px 0px -90px 0px' }}
                 transition={{
-                  duration: 0.48,
-                  delay: prefersReducedMotion ? 0 : idx * 0.1,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.78,
+                  delay: prefersReducedMotion ? 0 : idx * 0.16,
+                  ease: [0.22, 1, 0.36, 1],
                 }}
                 className="rounded-2xl p-6 bg-white border border-[#E2D6C3] shadow-sm flex flex-col justify-between space-y-4"
               >
