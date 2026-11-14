@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --obsidian-base: #0B0B0C;
+  --obsidian-surface: #141417;
+  --obsidian-border: #27272C;
+
+  --cream-base: #FAF6EE;
+  --cream-surface: #F2EBE0;
+  --cream-card: #FFFFFF;
+  --cream-border: #E2D6C3;
+  --cream-muted: #6C6358;
+
+  --orange-primary: #EA580C;
+  --orange-hover: #C2410C;
+  --orange-bright: #F97316;
+  --orange-soft: #FFF1E6;
+
+  --ink-dark: #0B0B0C;
+  --ink-muted: #524C44;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--ink-dark);
+  background-color: var(--cream-base);
+}
+
+.font-display {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom Cream, Black & Orange Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F2EBE0;
+}
+::-webkit-scrollbar-thumb {
+  background: #141417;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #EA580C;
+}
+
+@keyframes gradientShiftSlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-slow {
+  background: linear-gradient(125deg, #0b0b0c 0%, #1d1109 32%, #9a3412 65%, #141417 100%);
+  background-size: 240% 240%;
+  animation: gradientShiftSlow 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-gradient-slow {
+    animation: none;
+    background-position: 0% 50%;
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "MCSF - የኛfellow | የዳግማዊ ሚኒሊክ ጤና ሳይንስ ኮሌጅ ህብረት",
+  "description": "Menelik Christian Students Fellowship (MCSF - የኛfellow) official portal for Dagmawi Menelik Health Science College.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
