@@ -15,7 +15,6 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ScrollReveal } from './ScrollReveal';
-import { McsfLogo } from './McsfLogo';
 
 interface CategoryHubProps {
   onSelectCategory: (section: SectionId) => void;
@@ -33,8 +32,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
     title: string;
     subtitle: string;
     meta: string;
-    image: string;
-    imageClass?: string;
     icon: React.ComponentType<{ className?: string }>;
     accent?: boolean;
   }[] = [
@@ -43,8 +40,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Worship & Mezmur',
       subtitle: 'Ethiopian mezmur YouTube links (Guzo & Efeligihalehu) and our campus worship reel.',
       meta: 'Mezmur Playlist & Video',
-      image: '/assets/aistudio/photo_2026-11-12_22-11-52_872f12c6.jpg',
-      imageClass: 'object-[center_35%]',
       icon: Music,
       accent: true,
     },
@@ -53,8 +48,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Wednesday Program',
       subtitle: 'Every Wednesday at 6:00 LT (12:00 PM) at Semen Muluwengel & Genet Church.',
       meta: 'Schedule (Wednesday Only)',
-      image: '/assets/aistudio/photo_2026-11-12_22-12-38_ba551819.jpg',
-      imageClass: 'object-[center_82%]',
       icon: Calendar,
     },
     {
@@ -62,8 +55,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Adult ICU & Ward Care',
       subtitle: 'Medical trainees & nurses bringing compassionate bedside prayer and patient relief.',
       meta: '3 Ministry Spotlights',
-      image: '/assets/aistudio/photo_2026-11-12_18-05-48_2da4c305.jpg',
-      imageClass: 'object-[center_30%]',
       icon: HeartPulse,
     },
     {
@@ -71,8 +62,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Family Day & Circles',
       subtitle: 'Small-group circles, Crown celebrations, First Year Anniversary, and placement form.',
       meta: '6 Family Stories + Join Form',
-      image: '/assets/aistudio/photo_2026-11-12_17-45-19_2ed7927b.jpg',
-      imageClass: 'object-[center_35%]',
       icon: Users,
     },
     {
@@ -80,8 +69,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Photo Gallery',
       subtitle: 'Browse all 15 campus, outreach, ICU, and anniversary photographs with full stories.',
       meta: '15 Fellowship Photos',
-      image: '/assets/aistudio/photo_2026-11-12_17-40-29_01ace01c.jpg',
-      imageClass: 'object-[center_45%]',
       icon: Camera,
     },
     {
@@ -89,8 +76,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'About, Vision & FAQs',
       subtitle: 'Who we are at Dagmawi Menelik Health Science College, mission, and common answers.',
       meta: 'Calling & Vision',
-      image: '/assets/aistudio/photo_2026-11-12_22-14-56_caf9d87a.jpg',
-      imageClass: 'object-[center_35%]',
       icon: Info,
     },
     {
@@ -98,8 +83,6 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Devotionals & Ethics',
       subtitle: 'Healthcare reflections, poetry, and spiritual articles written by MCSF students.',
       meta: '3 Articles',
-      image: '/assets/aistudio/photo_2026-11-12_22-15-05_66dd196d.jpg',
-      imageClass: 'object-[center_55%]',
       icon: BookOpen,
     },
     {
@@ -107,81 +90,42 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
       title: 'Contact & Prayer Desk',
       subtitle: 'Reach coordinators Bemnet & Gedion, join @lursuesz, or submit a prayer request.',
       meta: 'Bemnet · Gedion · @lursuesz',
-      image: '/assets/aistudio/photo_2026-11-12_17-45-11_660624f9.jpg',
-      imageClass: 'object-[center_35%]',
       icon: PhoneCall,
     },
   ];
 
   return (
-    <section id="hero" className="py-7 md:py-10 bg-[#FAF6EE] text-[#0B0B0C] border-b border-[#E2D6C3]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
-        {/* All Categories Visual Banner Header with Logo & Fellowship Picture */}
+    <section
+      id="categories"
+      className="py-12 md:py-16 bg-[#FAF6EE] text-[#0B0B0C] border-b border-[#E2D6C3]"
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-10">
+        {/* Section header */}
         <motion.div
           initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
-          className="relative overflow-hidden rounded-3xl bg-[#0B0B0C] text-[#FAF6EE] border border-[#27272C] shadow-xl"
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-5"
         >
-          {/* Visible Fellowship Picture Backdrop */}
-          <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            <motion.img
-              src="/assets/aistudio/photo_2026-11-12_17-40-29_01ace01c.jpg"
-              alt=""
-              referrerPolicy="no-referrer"
-              initial={prefersReducedMotion ? false : { scale: 1.08 }}
-              animate={prefersReducedMotion ? undefined : { scale: 1 }}
-              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full h-full object-cover object-center opacity-70"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/55 to-[#0B0B0C]/20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0C]/85 via-transparent to-[#0B0B0C]/30" />
+          <div>
+            <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#EA580C] font-display block mb-2">
+              All Categories
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-[#0B0B0C] text-balance">
+              Explore MCSF Fellowship Pages
+            </h1>
           </div>
-
-          <div className="relative z-10 p-5 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="flex items-center gap-4">
-              <McsfLogo size="lg" className="shadow-lg" />
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#FB923C] font-display block mb-0.5">
-                  All Categories · MCSF Fellowship
-                </span>
-                <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-[#FAF6EE]">
-                  Explore MCSF Fellowship Pages
-                </h1>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
-              <button
-                type="button"
-                onClick={() =>
-                  onOpenDetail({ kind: 'photo', id: 'hero-group', returnSection: 'hero' })
-                }
-                className="inline-flex items-center gap-2.5 pr-3.5 pl-1.5 py-1.5 rounded-xl bg-[#141417]/90 hover:bg-[#27272C] text-[#FAF6EE] border border-white/15 hover:border-[#EA580C] transition-colors backdrop-blur-sm"
-              >
-                <img
-                  src="/assets/aistudio/photo_2026-11-12_17-40-29_01ace01c.jpg"
-                  alt="MCSF Group Photo"
-                  referrerPolicy="no-referrer"
-                  className="w-10 h-8 rounded-lg object-cover"
-                />
-                <span className="text-xs font-bold whitespace-nowrap">Campus Portrait</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#FB923C]" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => onSelectCategory('register')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-xs sm:text-sm font-bold transition-colors whitespace-nowrap shadow-md"
-              >
-                <span>Member Registration</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => onSelectCategory('register')}
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#EA580C] hover:bg-[#C2410C] text-white text-sm font-bold transition-colors whitespace-nowrap shadow-md self-start sm:self-auto"
+          >
+            <span>Member Registration</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </button>
         </motion.div>
 
-        {/* Category Cards Grid — Pictures on every card + animate one after another */}
+        {/* Category cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {categories.map((cat, idx) => {
             const Icon = cat.icon;
@@ -192,7 +136,7 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.38,
-                  delay: prefersReducedMotion ? 0 : 0.06 + idx * 0.06,
+                  delay: prefersReducedMotion ? 0 : 0.06 + idx * 0.05,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="h-full"
@@ -200,51 +144,39 @@ export const CategoryHub: React.FC<CategoryHubProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectCategory(cat.id)}
-                  className={`w-full text-left rounded-2xl overflow-hidden border transition-all h-full flex flex-col justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] ${
+                  className={`w-full text-left rounded-3xl p-6 border transition-all h-full flex flex-col justify-between group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] ${
                     cat.accent
                       ? 'bg-[#0B0B0C] text-[#FAF6EE] border-[#27272C] hover:border-[#EA580C] shadow-lg'
                       : 'bg-white text-[#0B0B0C] border-[#E2D6C3] hover:border-[#EA580C] hover:shadow-md'
                   }`}
                 >
                   <div>
-                    {/* Category Card Photo */}
-                    <div className="relative h-32 w-full overflow-hidden bg-[#0B0B0C]">
-                      <img
-                        src={cat.image}
-                        alt={cat.title}
-                        referrerPolicy="no-referrer"
-                        className={`w-full h-full object-cover ${cat.imageClass || 'object-center'} group-hover:scale-105 transition-transform duration-500`}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-                      <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
-                        <span
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center shadow ${
-                            cat.accent
-                              ? 'bg-[#EA580C] text-white'
-                              : 'bg-[#0B0B0C]/85 text-[#FB923C] border border-white/15 backdrop-blur-sm'
-                          }`}
-                        >
-                          <Icon className="w-4 h-4" />
-                        </span>
-                        <ArrowUpRight className="w-4 h-4 text-[#FB923C] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      </div>
-                    </div>
-
-                    <div className="p-4 pb-2">
-                      <h2 className="font-display font-bold text-base sm:text-lg group-hover:text-[#EA580C] transition-colors">
-                        {cat.title}
-                      </h2>
-                      <p
-                        className={`mt-1 text-xs leading-relaxed ${
-                          cat.accent ? 'text-[#E2D6C3]/80' : 'text-[#524C44]'
+                    <div className="flex items-start justify-between">
+                      <span
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          cat.accent
+                            ? 'bg-[#EA580C] text-white'
+                            : 'bg-[#FAF6EE] text-[#EA580C] border border-[#E2D6C3]'
                         }`}
                       >
-                        {cat.subtitle}
-                      </p>
+                        <Icon className="w-5 h-5" />
+                      </span>
+                      <ArrowUpRight className="w-4 h-4 text-[#EA580C] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
+
+                    <h2 className="mt-6 font-display font-bold text-xl group-hover:text-[#EA580C] transition-colors">
+                      {cat.title}
+                    </h2>
+                    <p
+                      className={`mt-2 text-sm leading-relaxed ${
+                        cat.accent ? 'text-[#E2D6C3]/80' : 'text-[#524C44]'
+                      }`}
+                    >
+                      {cat.subtitle}
+                    </p>
                   </div>
                   <div
-                    className={`mx-4 mb-4 mt-2 pt-2.5 border-t text-[11px] font-bold ${
+                    className={`mt-6 pt-4 border-t text-sm font-bold ${
                       cat.accent
                         ? 'border-[#27272C] text-[#FB923C]'
                         : 'border-[#F2EBE0] text-[#EA580C]'
