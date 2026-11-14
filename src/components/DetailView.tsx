@@ -66,17 +66,7 @@ export const DetailView: React.FC<DetailViewProps> = ({
       const stored = localStorage.getItem('mcsf_pub_comments');
       if (stored) return JSON.parse(stored);
     } catch {}
-    return {
-      'pub-med-1': [
-        {
-          id: 'c1',
-          name: 'Intern Nurse Bethlehem',
-          dept: 'Nursing & Adult ICU',
-          text: 'This encouraged our night shift team so deeply. Remembering that Christ is right there in the ICU gives us fresh strength.',
-          date: 'Nov 10, 2026',
-        },
-      ],
-    };
+    return {};
   });
 
   const [commentName, setCommentName] = useState('');
@@ -565,6 +555,9 @@ export const DetailView: React.FC<DetailViewProps> = ({
               <h2 className="font-display font-bold text-base sm:text-lg text-[#0B0B0C] mb-4">
                 Comments & Clinical Encouragements
               </h2>
+              <p className="-mt-2 mb-4 text-[11px] text-[#6C6358]">
+                Comments are saved on your own device only.
+              </p>
 
               <form onSubmit={(e) => handlePostComment(e, pub.id)} className="space-y-3 mb-6">
                 <div className="grid sm:grid-cols-2 gap-3">

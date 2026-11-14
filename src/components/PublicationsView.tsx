@@ -115,7 +115,7 @@ export const PublicationsView: React.FC<PublicationsViewProps> = ({ onOpenDetail
                     <div>
                       {pub.coverImage && (
                         <div className="h-44 w-full bg-[#0B0B0C] overflow-hidden">
-                          <img
+                          <img loading="lazy" decoding="async"
                             src={pub.coverImage}
                             alt={pub.title}
                             referrerPolicy="no-referrer"

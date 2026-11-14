@@ -41,77 +41,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBack, onDataChanged 
       );
       const fbData: FeedbackRecord[] = JSON.parse(localStorage.getItem('mcsf_feedbacks') || '[]');
 
-      if (regData.length === 0) {
-        const seedRegs: RegistrationRecord[] = [
-          {
-            id: 'reg-seed-1',
-            fullName: 'Yared Kassahun',
-            department: 'Medicine & Surgery',
-            academicYear: 'Year 3 (Clerkship)',
-            teams: ['Hospital Ward & ICU Ministry', 'Prayer & Intercession'],
-            phone: '0911 234 567',
-            email: 'yared.k@gmail.com',
-            registeredAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-            status: 'active',
-            notes: 'Available for Adult ICU prayer on Friday shifts.',
-          },
-          {
-            id: 'reg-seed-2',
-            fullName: 'Bethlehem Tadesse',
-            department: 'Nursing & Adult ICU',
-            academicYear: 'Year 4 (Internship / Senior)',
-            teams: ['Worship & Music Team', 'Charity & Patient Relief'],
-            phone: '0922 889 900',
-            email: 'betty.icu@gmail.com',
-            registeredAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-            status: 'active',
-          },
-        ];
-        localStorage.setItem('mcsf_registrations', JSON.stringify(seedRegs));
-        setRegistrations(seedRegs);
-      } else {
-        setRegistrations(regData);
-      }
-
-      if (famData.length === 0) {
-        const seedFams: FamilyRequestRecord[] = [
-          {
-            id: 'fam-seed-1',
-            fullName: 'Martha Haile',
-            department: 'Pharmacy',
-            academicYear: 'Year 2',
-            phone: '0944 556 677',
-            email: 'martha.pharm@gmail.com',
-            dutyShiftNotes: 'Free on Tuesday & Thursday evenings in campus study rooms.',
-            submittedAt: new Date(Date.now() - 86400000).toISOString(),
-            assignedFamilyGroup: 'MCSF Clinical Family Circle 1',
-          },
-        ];
-        localStorage.setItem('mcsf_family_requests', JSON.stringify(seedFams));
-        setFamilyRequests(seedFams);
-      } else {
-        setFamilyRequests(famData);
-      }
-
-      if (fbData.length === 0) {
-        const seedFb: FeedbackRecord[] = [
-          {
-            id: 'fb-seed-1',
-            type: 'prayer-request',
-            message:
-              'Please pray for patient in Bed 4 Adult ICU recovering from respiratory infection.',
-            name: 'Sister Selam (ICU Intern)',
-            email: 'selam.icu@gmail.com',
-            phone: '0911 000 111',
-            submittedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-          },
-        ];
-        localStorage.setItem('mcsf_feedbacks', JSON.stringify(seedFb));
-        setFeedbacks(seedFb);
-      } else {
-        setFeedbacks(fbData);
-      }
-    } catch {}
+      setRegistrations(regData);
+      setFamilyRequests(famData);
+      setFeedbacks(fbData);
+    } catch {
+      setRegistrations([]);
+      setFamilyRequests([]);
+      setFeedbacks([]);
+    }
   };
 
   useEffect(() => {
@@ -119,37 +56,61 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBack, onDataChanged 
   }, []);
 
   const handleExportCSV = () => {
-    let csvContent = 'data:text/csv;charset=utf-8,';
+    // Escape quotes and neutralise spreadsheet formula injection (=, +, -, @).
+    const cell = (value: unknown): string => {
+      let s = String(value ?? '');
+      if (/^[=+\-@]/.test(s)) s = `'${s}`;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+    const row = (values: unknown[]) => values.map(cell).join(',') + '\n';
+
+    let csv = '';
     if (activeSubTab === 'registrations') {
-      csvContent += 'ID,FullName,Department,Year,Teams,Phone,Email,Notes,Date\n';
+      csv += 'ID,FullName,Department,Year,Teams,Phone,Email,Notes,Date\n';
       registrations.forEach((r) => {
-        csvContent += `"${r.id}","${r.fullName}","${r.department}","${r.academicYear}","${r.teams.join(
-          '; '
-        )}","${r.phone}","${r.email}","${(r.notes || '').replace(/"/g, '""')}","${r.registeredAt}"\n`;
+        csv += row([
+          r.id,
+          r.fullName,
+          r.department,
+          r.academicYear,
+          r.teams.join('; '),
+          r.phone,
+          r.email,
+          r.notes,
+          r.registeredAt,
+        ]);
       });
     } else if (activeSubTab === 'families') {
-      csvContent += 'ID,FullName,Department,Year,Phone,Email,ShiftNotes,SubmittedAt\n';
+      csv += 'ID,FullName,Department,Year,Phone,Email,ShiftNotes,SubmittedAt\n';
       familyRequests.forEach((f) => {
-        csvContent += `"${f.id}","${f.fullName}","${f.department}","${f.academicYear}","${f.phone}","${f.email}","${(
-          f.dutyShiftNotes || ''
-        ).replace(/"/g, '""')}","${f.submittedAt}"\n`;
+        csv += row([
+          f.id,
+          f.fullName,
+          f.department,
+          f.academicYear,
+          f.phone,
+          f.email,
+          f.dutyShiftNotes,
+          f.submittedAt,
+        ]);
       });
     } else {
-      csvContent += 'ID,Type,Message,Name,Phone,Email,SubmittedAt\n';
+      csv += 'ID,Type,Message,Name,Phone,Email,SubmittedAt\n';
       feedbacks.forEach((fb) => {
-        csvContent += `"${fb.id}","${fb.type}","${fb.message.replace(/"/g, '""')}","${
-          fb.name || ''
-        }","${fb.phone || ''}","${fb.email || ''}","${fb.submittedAt}"\n`;
+        csv += row([fb.id, fb.type, fb.message, fb.name, fb.phone, fb.email, fb.submittedAt]);
       });
     }
 
-    const encodedUri = encodeURI(csvContent);
+    // BOM so Excel reads Amharic / UTF-8 correctly; Blob avoids '#' truncating the data URI.
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `mcsf_records_${activeSubTab}_${Date.now()}.csv`);
+    link.href = url;
+    link.download = `mcsf_records_${activeSubTab}_${Date.now()}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleClearTable = (type: 'registrations' | 'families' | 'feedback') => {
@@ -241,6 +202,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBack, onDataChanged 
             </button>
           </div>
         </div>
+
+        <p className="mb-6 text-xs text-[#524C44] bg-[#FFF1E6] border border-[#EA580C]/30 rounded-xl px-4 py-3 leading-relaxed">
+          These records are stored only in this browser on this device. Registrations and requests
+          submitted by other students reach the coordinators through Telegram, not this page.
+        </p>
 
         {/* Tab switchers */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">

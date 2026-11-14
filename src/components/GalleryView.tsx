@@ -75,7 +75,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({ onOpenDetail }) => {
                 className="w-full text-left group cursor-pointer rounded-2xl overflow-hidden bg-[#141417] border border-[#27272C] hover:border-[#EA580C] transition-all duration-300 shadow-lg flex flex-col justify-between h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
               >
                 <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-black">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={photo.src}
                     alt={photo.title}
                     referrerPolicy="no-referrer"

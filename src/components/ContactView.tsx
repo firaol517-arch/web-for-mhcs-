@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { FeedbackRecord } from '../types/fellowship';
-import { FELLOWSHIP_LEADERS, TELEGRAM_CHANNEL } from '../data/fellowshipData';
+import {
+  FELLOWSHIP_LEADERS,
+  TELEGRAM_CHANNEL,
+  buildPrayerMessageLink,
+} from '../data/fellowshipData';
 import { CheckCircle2, ArrowRight, Share2, MapPin, Phone, MessageCircle } from 'lucide-react';
 import { ScrollReveal } from './ScrollReveal';
 
@@ -53,6 +57,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted })
 
   const handleReset = () => {
     setMessage('');
+    setFeedbackType('prayer-request');
     setName('');
     setEmail('');
     setPhone('');
@@ -229,12 +234,28 @@ export const ContactView: React.FC<ContactViewProps> = ({ onFeedbackSubmitted })
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="text-2xl font-black font-display text-[#0B0B0C]">
-                    Message Received!
+                    Ready to send
                   </h3>
                   <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                    Thank you! Your prayer request or message has reached the fellowship coordinator team. We will remember your petition in our bedside and weekly intercessions.
+                    Tap the button below to send your prayer request or message to the coordinator on Telegram. It reaches the team as soon as you press send in Telegram.
                   </p>
-                  <div className="mt-6">
+                  <div className="mt-5">
+                    <a
+                      href={buildPrayerMessageLink({
+                        type: feedbackType,
+                        message,
+                        name: name.trim() || undefined,
+                        phone: phone.trim() || undefined,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Send on Telegram</span>
+                    </a>
+                  </div>
+                  <div className="mt-4">
                     <button
                       type="button"
                       onClick={handleReset}

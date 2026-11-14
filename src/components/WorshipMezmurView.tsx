@@ -60,7 +60,7 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                         />
                       ) : (
                         <>
-                          <img
+                          <img loading="lazy" decoding="async"
                             src={thumbUrl}
                             alt={`${song.title} — ${song.artist}`}
                             referrerPolicy="no-referrer"
@@ -193,7 +193,7 @@ export const WorshipMezmurView: React.FC<WorshipMezmurViewProps> = ({
                 className="text-left group rounded-2xl overflow-hidden bg-white border border-[#E2D6C3] hover:border-[#EA580C] transition-all shadow-sm flex flex-col justify-between"
               >
                 <div className="h-52 w-full bg-[#0B0B0C] overflow-hidden">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={item.src}
                     alt={item.title}
                     referrerPolicy="no-referrer"

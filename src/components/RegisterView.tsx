@@ -104,9 +104,15 @@ Phone: ${record.phone}
 Email: ${record.email}${record.notes ? `\nNotes: ${record.notes}` : ''}
 College: Dagmawi Menelik Health Science College`;
 
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 3000);
+      })
+      .catch(() => {
+        window.prompt('Copy your registration details:', text);
+      });
   };
 
   const handleReset = () => {
@@ -147,10 +153,10 @@ College: Dagmawi Menelik Health Science College`;
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
-                  Registration Completed!
+                  One last step, {submittedRecord.fullName.split(' ')[0]}!
                 </h3>
                 <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                  Welcome to the fellowship, <strong>{submittedRecord.fullName}</strong>! You are officially registered with MCSF at Dagmawi Menelik Health Science College.
+                  Your details are ready. Tap <strong>Send to Gedion</strong> below so the coordinators receive your registration and confirm your place in MCSF.
                 </p>
 
                 {/* Summary Card */}

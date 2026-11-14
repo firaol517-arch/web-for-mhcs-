@@ -5,7 +5,12 @@ import {
   MCSFDepartment,
   SectionId,
 } from '../types/fellowship';
-import { MCSF_DEPARTMENTS, ACADEMIC_YEARS, GALLERY_PHOTOS } from '../data/fellowshipData';
+import {
+  MCSF_DEPARTMENTS,
+  ACADEMIC_YEARS,
+  GALLERY_PHOTOS,
+  buildFamilyRequestLink,
+} from '../data/fellowshipData';
 import { isValidEmail, isValidPhoneNumber } from '../utils/fellowship';
 import { CheckCircle2, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
@@ -176,13 +181,31 @@ export const FamilyView: React.FC<FamilyViewProps> = ({
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-bold font-display text-[#0B0B0C]">
-                  Family Request Received!
+                  Almost there!
                 </h3>
                 <p className="mt-2 text-sm text-[#524C44] max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong>{fullName}</strong>. Your family placement request for <strong>{department}</strong> has been received. A coordinator will contact you to introduce you to your circle.
+                  Thank you, <strong>{fullName}</strong>. Tap the button below to send your family circle request to the coordinator on Telegram so they can introduce you to your circle.
                 </p>
 
-                <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <div className="mt-6">
+                  <a
+                    href={buildFamilyRequestLink({
+                      fullName,
+                      department,
+                      academicYear,
+                      phone,
+                      email,
+                      dutyShiftNotes: dutyShiftNotes.trim() || undefined,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#EA580C] hover:bg-[#C2410C] text-white font-bold text-xs sm:text-sm transition-colors shadow"
+                  >
+                    Send request to Gedion on Telegram
+                  </a>
+                </div>
+
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <button
                     type="button"
                     onClick={() => onScrollToSection('gallery')}

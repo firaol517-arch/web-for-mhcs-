@@ -254,7 +254,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onScrollToSection, o
                       className="w-full h-full text-left group rounded-2xl overflow-hidden bg-[#141417] border border-[#27272C] hover:border-[#EA580C] transition-all flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C]"
                     >
                       <div className="h-56 w-full overflow-hidden bg-black relative">
-                        <img
+                        <img loading="lazy" decoding="async"
                           src={flyer.src}
                           alt={flyer.title}
                           referrerPolicy="no-referrer"

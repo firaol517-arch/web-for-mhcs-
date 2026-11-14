@@ -97,7 +97,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
               </span>
               <span aria-hidden="true">·</span>
               <span>
-                <strong className="text-[#FAF6EE]">Wed 6:00 LT</strong> Main Weekly Program (Wed Only)
+                <strong className="text-[#FAF6EE]">Wed 6:00 LT</strong> Weekly Fellowship Program
               </span>
               <span aria-hidden="true">·</span>
               <span>

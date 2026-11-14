@@ -567,14 +567,49 @@ export function buildTelegramRegistrationLink(record: {
   email: string;
   notes?: string;
 }): string {
-  const text = `🏥 *MCSF Membership Registration*
-👤 *Name:* ${record.fullName}
-🩺 *Department:* ${record.department}
-📚 *Year:* ${record.academicYear}
-🤝 *Teams:* ${record.teams.join(', ')}
-📞 *Phone:* ${record.phone}
-✉️ *Email:* ${record.email}${record.notes ? `\n📝 *Notes:* ${record.notes}` : ''}
-📍 *College:* Dagmawi Menelik Health Science College`;
+  const text = `🏥 MCSF Membership Registration
+👤 Name: ${record.fullName}
+🩺 Department: ${record.department}
+📚 Year: ${record.academicYear}
+🤝 Teams: ${record.teams.join(', ')}
+📞 Phone: ${record.phone}
+✉️ Email: ${record.email}${record.notes ? `\n📝 Notes: ${record.notes}` : ''}
+📍 College: Dagmawi Menelik Health Science College`;
 
-  return `https://t.me/Gedion98?text=${encodeURIComponent(text)}`;
+  return buildTelegramLink('Gedion98', text);
+}
+
+/**
+ * Generic Telegram deep link that opens a chat with a prefilled message.
+ */
+export function buildTelegramLink(username: string, text: string): string {
+  return `https://t.me/${username.replace('@', '')}?text=${encodeURIComponent(text)}`;
+}
+
+export function buildFamilyRequestLink(record: {
+  fullName: string;
+  department: string;
+  academicYear: string;
+  phone: string;
+  email: string;
+  dutyShiftNotes?: string;
+}): string {
+  const text = `🤝 MCSF Family Circle Request
+👤 Name: ${record.fullName}
+🩺 Department: ${record.department}
+📚 Year: ${record.academicYear}
+📞 Phone: ${record.phone}
+✉️ Email: ${record.email}${record.dutyShiftNotes ? `\n🕒 Availability: ${record.dutyShiftNotes}` : ''}`;
+  return buildTelegramLink('Gedion98', text);
+}
+
+export function buildPrayerMessageLink(record: {
+  type: string;
+  message: string;
+  name?: string;
+  phone?: string;
+}): string {
+  const text = `🙏 MCSF ${record.type.replace('-', ' ')}
+${record.message}${record.name ? `\n— ${record.name}` : ''}${record.phone ? `\nContact: ${record.phone}` : ''}`;
+  return buildTelegramLink('Bemnet1961', text);
 }
