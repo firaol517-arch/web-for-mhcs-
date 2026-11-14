@@ -3,6 +3,7 @@ import { DetailRoute, SectionId } from '../types/fellowship';
 import { TELEGRAM_CHANNEL } from '../data/fellowshipData';
 import { ArrowRight, Send, ArrowUpRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'motion/react';
+import { McsfLogo } from './McsfLogo';
 
 interface HeroProps {
   onScrollToSection: (section: SectionId) => void;
@@ -39,8 +40,9 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-8 flex flex-col justify-center space-y-4"
           >
-            <div className="text-xs sm:text-sm font-semibold text-[#FB923C] tracking-wide">
-              MCSF · Dagmawi Menelik Health Science College · Addis Ababa
+            <div className="flex items-center gap-3 text-xs sm:text-sm font-semibold text-[#FB923C] tracking-wide">
+              <McsfLogo size="md" />
+              <span>MCSF · Dagmawi Menelik Health Science College · Addis Ababa</span>
             </div>
 
             <div>
@@ -95,11 +97,11 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
               <span>
                 <strong className="text-[#FB923C]">150+</strong> Alumni in Healthcare
               </span>
-              <span aria-hidden="true">·</span>
+              <span aria-hidden="true" className="hidden sm:inline">·</span>
               <span>
                 <strong className="text-[#FAF6EE]">Wed 6:00 LT</strong> Weekly Fellowship Program
               </span>
-              <span aria-hidden="true">·</span>
+              <span aria-hidden="true" className="hidden sm:inline">·</span>
               <span>
                 <strong className="text-[#FAF6EE]">Adult ICU</strong> Hospital Intercession
               </span>

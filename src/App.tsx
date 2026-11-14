@@ -3,6 +3,7 @@ import { DetailRoute, SectionId } from './types/fellowship';
 import { buildDetailHash, parseDetailHash } from './utils/fellowship';
 import { Navbar } from './components/Navbar';
 import { CategoryHub } from './components/CategoryHub';
+import { Hero } from './components/Hero';
 const AboutSection = lazy(() => import('./components/AboutSection').then((m) => ({ default: m.AboutSection })));
 const WorshipMezmurView = lazy(() => import('./components/WorshipMezmurView').then((m) => ({ default: m.WorshipMezmurView })));
 const HospitalMinistryView = lazy(() => import('./components/HospitalMinistryView').then((m) => ({ default: m.HospitalMinistryView })));
@@ -186,6 +187,10 @@ export default function App() {
       default:
         return (
           <>
+            <Hero
+              onScrollToSection={navigateToCategory}
+              onOpenDetail={handleOpenDetail}
+            />
             <CategoryHub
               onSelectCategory={navigateToCategory}
               onOpenDetail={handleOpenDetail}
