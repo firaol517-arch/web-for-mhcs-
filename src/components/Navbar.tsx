@@ -10,6 +10,8 @@ interface NavbarProps {
   onScrollToSection: (section: SectionId) => void;
   isSubView: boolean;
   onReturnHome: () => void;
+  hideBrandLogo?: boolean;
+  introRevealing?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -17,6 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollToSection,
   isSubView,
   onReturnHome,
+  hideBrandLogo = false,
+  introRevealing = true,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -50,7 +54,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-[#EA580C] via-[#FB923C] to-[#EA580C] pointer-events-none"
         />
       )}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 md:gap-4 lg:gap-8">
+      <div
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 md:gap-4 lg:gap-8 transition-opacity duration-500 ${
+          introRevealing ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         {/* Zone 1: Clean single-line brand wordmark with emblem */}
         <motion.button
           type="button"
@@ -59,7 +67,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => (isSubView ? onReturnHome() : handleLinkClick('hero'))}
           className="inline-flex items-center gap-2.5 font-display text-lg sm:text-xl font-black tracking-tight text-[#FAF6EE] hover:text-[#FB923C] transition-colors whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EA580C] rounded"
         >
-          <McsfLogo size="sm" />
+          <span
+            id="navbar-logo-anchor"
+            className={`inline-flex items-center justify-center ${
+              hideBrandLogo ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            <McsfLogo size="sm" />
+          </span>
           <span>MCSF Fellowship</span>
         </motion.button>
 

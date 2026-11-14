@@ -16,6 +16,7 @@ const ContactView = lazy(() => import('./components/ContactView').then((m) => ({
 const DetailView = lazy(() => import('./components/DetailView').then((m) => ({ default: m.DetailView })));
 const AdminPortal = lazy(() => import('./components/AdminPortal').then((m) => ({ default: m.AdminPortal })));
 import { Footer } from './components/Footer';
+import { CinematicIntro, IntroPhase } from './components/CinematicIntro';
 import { ArrowLeft } from 'lucide-react';
 import { MotionConfig, motion } from 'motion/react';
 
@@ -73,6 +74,15 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<SectionId>(() =>
     parseInitialSection()
   );
+  const [introPhase, setIntroPhase] = useState<IntroPhase>(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return 'done';
+    }
+    return 'loading';
+  });
 
   useEffect(() => {
     if (isAdminOpen) {
@@ -191,6 +201,7 @@ export default function App() {
             <Hero
               onScrollToSection={navigateToCategory}
               onOpenDetail={handleOpenDetail}
+              introReady={introPhase !== 'loading'}
             />
             <CategoryHub
               onSelectCategory={navigateToCategory}
@@ -209,24 +220,46 @@ export default function App() {
       ? `detail-${activeDetail.kind}-${activeDetail.id}`
       : activeSection;
 
+  const introRevealing = introPhase !== 'loading';
+
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen flex flex-col bg-[#FAF6EE] text-[#0B0B0C] selection:bg-[#EA580C] selection:text-white">
+        <CinematicIntro
+          phase={introPhase}
+          onStartDocking={() => setIntroPhase('docking')}
+          onComplete={() => setIntroPhase('done')}
+        />
+
         <Navbar
           activeSection={activeSection}
           onScrollToSection={navigateToCategory}
           isSubView={Boolean(activeDetail || isAdminOpen)}
           onReturnHome={() => navigateToCategory('hero')}
+          hideBrandLogo={introPhase !== 'done'}
+          introRevealing={introRevealing}
         />
 
         <main className="flex-1 overflow-x-clip">
-          <Suspense fallback={<PageFallback />}>
-            <motion.div
-              key={viewKey}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            >
+          <motion.div
+            initial={false}
+            animate={
+              introPhase === 'loading'
+                ? { opacity: 0, scale: 0.99, filter: 'blur(6px)' }
+                : introPhase === 'docking'
+                  ? { opacity: 1, scale: 1, filter: 'blur(0px)' }
+                  : { opacity: 1, scale: 1, filter: 'none' }
+            }
+            transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+            className={introPhase === 'done' ? undefined : 'will-change-[opacity,filter]'}
+          >
+            <Suspense fallback={<PageFallback />}>
+              <motion.div
+                key={viewKey}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              >
               {isAdminOpen ? (
                 <AdminPortal onBack={() => navigateToCategory('hero')} />
               ) : activeDetail ? (
@@ -272,8 +305,9 @@ export default function App() {
                   {renderCategoryView()}
                 </>
               )}
-            </motion.div>
-          </Suspense>
+              </motion.div>
+            </Suspense>
+          </motion.div>
         </main>
 
         <Footer

@@ -102,12 +102,14 @@ interface AnimatedCounterProps {
   target: number;
   suffix?: string;
   duration?: number;
+  ready?: boolean;
 }
 
 export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   target,
   suffix = '',
   duration = 0.85,
+  ready = true,
 }) => {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 'some' });
@@ -119,14 +121,14 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
       setDisplay(target);
       return;
     }
-    if (!inView) return;
+    if (!inView || !ready) return;
     const controls = animate(0, target, {
       duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (latest) => setDisplay(Math.round(latest)),
     });
     return () => controls.stop();
-  }, [inView, target, duration, prefersReducedMotion]);
+  }, [inView, ready, target, duration, prefersReducedMotion]);
 
   return (
     <span ref={ref} className="tabular-nums">

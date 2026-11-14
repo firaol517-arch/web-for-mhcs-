@@ -9,9 +9,14 @@ import { AnimatedCounter } from './ScrollReveal';
 interface HeroProps {
   onScrollToSection: (section: SectionId) => void;
   onOpenDetail: (detail: DetailRoute) => void;
+  introReady?: boolean;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onScrollToSection,
+  onOpenDetail,
+  introReady = true,
+}) => {
   const prefersReducedMotion = useReducedMotion();
 
   const fadeUp = (delay: number) =>
@@ -19,8 +24,8 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
       ? {}
       : {
           initial: { opacity: 0, y: 14 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.42, delay, ease: [0.22, 1, 0.36, 1] as const },
+          animate: introReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
+          transition: { duration: 0.42, delay: introReady ? delay : 0, ease: [0.22, 1, 0.36, 1] as const },
         };
 
   return (
@@ -59,8 +64,8 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
                   <motion.span
                     className="block"
                     initial={prefersReducedMotion ? false : { y: '100%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    transition={{ duration: 0.42, delay: 0.04, ease: [0.16, 1, 0.3, 1] }}
+                    animate={introReady || prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '100%', opacity: 0 }}
+                    transition={{ duration: 0.42, delay: introReady ? 0.04 : 0, ease: [0.16, 1, 0.3, 1] }}
                   >
                     Menelik Christian
                   </motion.span>
@@ -69,8 +74,8 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
                   <motion.span
                     className="block text-[#FB923C]"
                     initial={prefersReducedMotion ? false : { y: '100%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    transition={{ duration: 0.44, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    animate={introReady || prefersReducedMotion ? { y: '0%', opacity: 1 } : { y: '100%', opacity: 0 }}
+                    transition={{ duration: 0.44, delay: introReady ? 0.1 : 0, ease: [0.16, 1, 0.3, 1] }}
                   >
                     Students Fellowship
                   </motion.span>
@@ -136,7 +141,7 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
             >
               <span>
                 <strong className="text-[#FB923C]">
-                  <AnimatedCounter target={150} suffix="+" duration={0.85} />
+                  <AnimatedCounter target={150} suffix="+" duration={0.85} ready={introReady} />
                 </strong>{' '}
                 Alumni in Healthcare
               </span>
@@ -154,8 +159,8 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection, onOpenDetail }) =
           {/* Right Column: Floating Story Portrait Card (Card-to-Detail) */}
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, y: 18, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.45, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            animate={introReady || prefersReducedMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 18, scale: 0.97 }}
+            transition={{ duration: 0.45, delay: introReady ? 0.12 : 0, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-4 flex lg:justify-end"
           >
             <motion.button
